@@ -1,0 +1,83 @@
+---
+name: prd-yaz
+description: Bir fikri, kullanıcıyı adım adım sorgulayıp varsa kod tabanını keşfederek ve modülleri tasarlayarak net, uygulanabilir bir PRD'ye (ürün gereksinim belgesine) dönüştürür ve sonucu prd.md dosyasına yazar. Kullanıcı PRD ya da ürün gereksinim belgesi yazmak, yeni bir uygulama veya özellik planlamak, bir fikri hayata geçirmeden önce kapsamını netleştirmek, ya da yapay zekaya kod yazdırmadan önce işi spesifikasyona dökmek istediğinde MUTLAKA bu skill'i kullan. "Şöyle bir uygulama yapmak istiyorum", "nereden başlasam", "bunu planlayalım", "spec çıkar", "özellik planı", "kapsamı belirleyelim" gibi belirsiz başlangıç durumlarında da, kullanıcı "PRD" kelimesini hiç kullanmasa bile devreye gir. Yalnızca tek satırlık bir kod yazma ya da var olan bir PRD'yi sadece biçimlendirme gibi planlama gerektirmeyen işlerde kullanma.
+---
+
+Bu skill, kullanıcı bir PRD oluşturmak istediğinde devreye girer. Gerekli görmediğin adımları atlayabilirsin.
+
+1. Kullanıcıdan çözmek istediği problemi uzun ve detaylı anlatmasını iste, varsa çözüm fikirlerini de sor.
+
+2. Varsa projeyi (repoyu) keşfet; kullanıcının söylediklerini doğrula ve kod tabanının mevcut durumunu anla. Yeni ve boş bir proje ise bu adımı atla.
+
+3. Ortak bir anlayışa varana kadar kullanıcıyı planın her yönüyle ilgili sorgula. Tasarımın her dalını tek tek gez, kararlar arasındaki bağımlılıkları sırayla çöz. Belirsiz kalan hiçbir nokta bırakma.
+
+Eğer karşında etkileşimli bir kullanıcı yoksa (otomatik bir ortamdasın) ya da kullanıcı senin yerine varsaymanı isterse: soruları kendi makul varsayımlarınla yanıtla ve bu varsayımları PRD'nin Notlar bölümünde tek tek açıkça listele ki sonradan teyit edilebilsin. İmkân varsa yine de en kritik bir iki belirsizliği kullanıcıya sormayı dene.
+
+4. İnşa edilecek ya da değiştirilecek ana modülleri (parçaları) taslak halinde çıkar. İzole olarak test edilebilen derin modüller bulmaya çalış.
+
+Derin modül (sığ modülün tersi): çok sayıda işlevi sade, test edilebilir ve nadiren değişen bir arayüzün arkasında toplayan modüldür.
+
+Bu modüllerin kullanıcının beklentisiyle örtüşüp örtüşmediğini teyit et. Hangi modüller için test yazılmasını istediğini kullanıcıya sor.
+
+5. Problemi ve çözümü tam anladığında, aşağıdaki şablonu kullanarak PRD'yi YAZ ve `prd.md` dosyasına kaydet. Önce PRD'nin tam gövdesini dosyaya yaz, sonra dur. Sadece "yazıyorum" deyip durma, gerçekten içeriği üret. (İstenirse PRD ayrıca bir GitHub issue olarak da açılabilir.)
+
+<prd-sablonu>
+
+## Problem
+
+Kullanıcının yaşadığı problem, kullanıcının gözünden.
+
+## Çözüm
+
+Probleme önerilen çözüm, kullanıcının gözünden.
+
+## Kullanıcı Hikayeleri
+
+UZUN, numaralı bir kullanıcı hikayeleri listesi. Her hikaye şu biçimde olsun:
+
+1. Bir <aktör> olarak, bir <özellik> istiyorum, böylece <fayda>.
+
+<ornek>
+1. Bir mobil banka müşterisi olarak, hesaplarımdaki bakiyeyi görmek istiyorum, böylece harcamalarım hakkında daha bilinçli karar verebilirim.
+</ornek>
+
+Bu liste çok kapsamlı olsun ve özelliğin bütün yönlerini kapsasın.
+
+## Uygulama Kararları
+
+Alınan uygulama kararlarının listesi. Şunları içerebilir:
+
+- İnşa edilecek ya da değiştirilecek modüller
+- Bu modüllerin değişecek arayüzleri
+- Geliştiriciden gelen teknik netleştirmeler
+- Mimari kararlar
+- Şema (veri tabanı) değişiklikleri
+- API sözleşmeleri
+- Belirli etkileşimler
+
+Belirli dosya yolları ya da kod parçaları EKLEME. Bunlar çok hızlı eskiyebilir.
+
+## Test Kararları
+
+Alınan test kararlarının listesi. Şunları içersin:
+
+- İyi bir testin tanımı (yalnızca dışa dönük davranışı test et, iç ayrıntıları değil)
+- Hangi modüllerin test edileceği
+- Projedeki benzer testlerden örnekler (varsa)
+
+## Kabul Kriterleri
+
+Bu özelliğin "tamamlandı" sayılması için sağlanması gereken somut, ölçülebilir ve doğrulanabilir koşullar. "Güzel olsun" gibi belirsiz değil, "şu akış uçtan uca çalışır ve build hatasız geçer" gibi net yaz. Bu kriterler, /goal gibi hedefe kilitleyen araçlarla doğrudan kullanılabilecek açıklıkta olmalı, çünkü modelin "bitti gibi" deyip yarım bırakmasını ölçülebilir bir bitiş çizgisi engeller.
+
+## Kapsam Dışı
+
+Bu PRD için kapsam dışı olan şeylerin açıklaması.
+
+## Notlar
+
+Özellikle ilgili başka notlar.
+
+</prd-sablonu>
+
+---
+Kaynak: Bu skill, Matt Pocock'un write-a-prd skill'inden (github.com/mattpocock/skills) Türkçeye uyarlanmıştır. Yapılan uyarlamalar: çıktı GitHub issue yerine prd.md dosyasına yazılır; 5. adım PRD gövdesinin gerçekten yazılması için netleştirildi; şablona /goal ile kullanılabilen ölçülebilir bir Kabul Kriterleri başlığı eklendi; etkileşimli kullanıcı olmayan ortamlar için makul-varsayım davranışı tanımlandı.
