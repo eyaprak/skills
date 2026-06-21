@@ -78,6 +78,3 @@ Bu PRD için kapsam dışı olan şeylerin açıklaması.
 Özellikle ilgili başka notlar.
 
 </prd-sablonu>
-
----
-Kaynak: Bu skill, Matt Pocock'un write-a-prd skill'inden (github.com/mattpocock/skills) Türkçeye uyarlanmıştır. Yapılan uyarlamalar: çıktı GitHub issue yerine prd.md dosyasına yazılır; 5. adım PRD gövdesinin gerçekten yazılması için netleştirildi; şablona /goal ile kullanılabilen ölçülebilir bir Kabul Kriterleri başlığı eklendi; etkileşimli kullanıcı olmayan ortamlar için makul-varsayım davranışı tanımlandı.
