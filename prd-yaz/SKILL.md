@@ -5,11 +5,20 @@ description: Bir fikri, kullanıcıyı adım adım sorgulayıp varsa kod tabanı
 
 Bu skill, kullanıcı bir PRD oluşturmak istediğinde devreye girer. Gerekli görmediğin adımları atlayabilirsin.
 
-1. Kullanıcıdan çözmek istediği problemi uzun ve detaylı anlatmasını iste, varsa çözüm fikirlerini de sor.
+## Soru Sorma Biçimi (Agent'a Göre)
+
+Bu skill boyunca kullanıcıya soru yöneltirken, içinde çalıştığın agent'ın yeteneklerine göre EN UYGUN soru sorma aracını kullan. Düz metinle "şunu da söyle" diye sormak yerine, ortam destekliyorsa yapılandırılmış/seçimli soru araçlarını tercih et:
+
+- **Claude / Claude Code** (bu ortam): Birden çok şıkkı olan, mutually-exclusive ya da çoklu seçim gerektiren kararlar için `AskUserQuestion` aracını kullan. Her soruda 2-4 net şık sun, önerdiğin şıkkı ilk sıraya koyup etiketine "(Önerilen)" ekle ve `description` alanında her şıkkın sonucunu/ödünleşimini açıkla. Birden fazla bağımsız karar varsa tek çağrıda (en fazla 4) soru gruplayabilirsin; cevaplar birbirinden bağımsızsa `multiSelect: true` kullan. Tamamen açık uçlu, serbest metin gerektiren anlatımlar (örneğin "problemi uzun uzun anlat") için düz metin sorusu kullanmaya devam et — bunları şıkka sıkıştırmaya çalışma.
+- **Diğer agent'lar / etkileşimli olmayan ortamlar**: Yapılandırılmış soru aracı yoksa, soruları net ve numaralı düz metin olarak sor; ya da etkileşimli kullanıcı yoksa makul varsayımlarla ilerleyip varsayımları Notlar bölümünde listele (bkz. Adım 3).
+
+Genel kural: kararı sen netleştireceksen ve sınırlı sayıda makul seçenek varsa → seçimli soru aracı. Kullanıcının kendi cümleleriyle anlatması gerekiyorsa → açık uçlu metin.
+
+1. Kullanıcıdan çözmek istediği problemi uzun ve detaylı anlatmasını iste, varsa çözüm fikirlerini de sor. (Bu açık uçlu bir anlatım olduğundan düz metin sorusu uygundur.)
 
 2. Varsa projeyi (repoyu) keşfet; kullanıcının söylediklerini doğrula ve kod tabanının mevcut durumunu anla. Yeni ve boş bir proje ise bu adımı atla.
 
-3. Ortak bir anlayışa varana kadar kullanıcıyı planın her yönüyle ilgili sorgula. Tasarımın her dalını tek tek gez, kararlar arasındaki bağımlılıkları sırayla çöz. Belirsiz kalan hiçbir nokta bırakma.
+3. Ortak bir anlayışa varana kadar kullanıcıyı planın her yönüyle ilgili sorgula. Tasarımın her dalını tek tek gez, kararlar arasındaki bağımlılıkları sırayla çöz. Belirsiz kalan hiçbir nokta bırakma. Sınırlı seçenekli kararları (örn. teknoloji seçimi, mimari yaklaşım, kapsam sınırı) yukarıdaki "Soru Sorma Biçimi" bölümüne göre seçimli soru aracıyla (Claude Code'da `AskUserQuestion`) sor.
 
 Eğer karşında etkileşimli bir kullanıcı yoksa (otomatik bir ortamdasın) ya da kullanıcı senin yerine varsaymanı isterse: soruları kendi makul varsayımlarınla yanıtla ve bu varsayımları PRD'nin Notlar bölümünde tek tek açıkça listele ki sonradan teyit edilebilsin. İmkân varsa yine de en kritik bir iki belirsizliği kullanıcıya sormayı dene.
 
@@ -17,7 +26,7 @@ Eğer karşında etkileşimli bir kullanıcı yoksa (otomatik bir ortamdasın) y
 
 Derin modül (sığ modülün tersi): çok sayıda işlevi sade, test edilebilir ve nadiren değişen bir arayüzün arkasında toplayan modüldür.
 
-Bu modüllerin kullanıcının beklentisiyle örtüşüp örtüşmediğini teyit et. Hangi modüller için test yazılmasını istediğini kullanıcıya sor.
+Bu modüllerin kullanıcının beklentisiyle örtüşüp örtüşmediğini teyit et. Hangi modüller için test yazılmasını istediğini kullanıcıya sor — modül listesi belli olduğundan bunu seçimli/çoklu seçim soru aracıyla (Claude Code'da `AskUserQuestion`, `multiSelect: true`) sormak en uygunudur.
 
 5. Problemi ve çözümü tam anladığında, aşağıdaki şablonu kullanarak PRD'yi YAZ ve `prd.md` dosyasına kaydet. Önce PRD'nin tam gövdesini dosyaya yaz, sonra dur. Sadece "yazıyorum" deyip durma, gerçekten içeriği üret. (İstenirse PRD ayrıca bir GitHub issue olarak da açılabilir.)
 
