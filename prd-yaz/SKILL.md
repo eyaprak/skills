@@ -20,7 +20,14 @@ Genel kural: kararı sen netleştireceksen ve sınırlı sayıda makul seçenek 
 
 3. Ortak bir anlayışa varana kadar kullanıcıyı planın her yönüyle ilgili sorgula. Tasarımın her dalını tek tek gez, kararlar arasındaki bağımlılıkları sırayla çöz. Belirsiz kalan hiçbir nokta bırakma. Sınırlı seçenekli kararları (örn. teknoloji seçimi, mimari yaklaşım, kapsam sınırı) yukarıdaki "Soru Sorma Biçimi" bölümüne göre seçimli soru aracıyla (Claude Code'da `AskUserQuestion`) sor.
 
-Eğer karşında etkileşimli bir kullanıcı yoksa (otomatik bir ortamdasın) ya da kullanıcı senin yerine varsaymanı isterse: soruları kendi makul varsayımlarınla yanıtla ve bu varsayımları PRD'nin Notlar bölümünde tek tek açıkça listele ki sonradan teyit edilebilsin. İmkân varsa yine de en kritik bir iki belirsizliği kullanıcıya sormayı dene.
+**Kritik kararlarda kaçış kapısı YOKTUR.** Etkileşimli bir kullanıcı varken — kullanıcı "sen varsay", "bana sorma", "sen karar ver", "uygun gördüğünü yap" dese bile — teknoloji seçimi, mimari yaklaşım, veri modeli, kapsam sınırı, kimlik doğrulama/ödeme gibi geri dönüşü zor ya da kritik kararları tek başına karara bağlayıp doğrudan PRD'ye veya koda ATLAMA. "Sen varsay" talimatını sessizce varsayma izni olarak DEĞİL, "kararı benim önerimle yönlendir" olarak yorumla:
+
+- Kararı, önerinle yönlendirilmiş seçimli bir `AskUserQuestion` sorusuna dönüştür.
+- En güçlü gördüğün seçeneği ilk sıraya koy ve etiketine "(Önerilen)" ekle; `description` alanında neden önerdiğini ve ödünleşimini kısaca açıkla.
+- Böylece kullanıcı önerini tek seçimle onaylayıp hızla ilerleyebilir, ama karar yine de ona ait kalır. Hız, "hiç sormamakla" değil, "iyi bir varsayılanı en üste koyup tek tıkla onaylatmakla" sağlanır.
+- Birden çok kritik karar varsa bunları tek `AskUserQuestion` çağrısında (en fazla 4) gruplayabilirsin; her biri için yine önerilen şık en üstte olsun.
+
+Yalnızca karşında GERÇEKTEN etkileşimli bir kullanıcı yoksa (otomatik/headless bir ortam: cron, CI, batch çalıştırma vb.): soruları kendi makul varsayımlarınla yanıtla ve bu varsayımları PRD'nin Notlar bölümünde tek tek açıkça listele ki sonradan teyit edilebilsin. Bu sessiz-varsayım yolu SADECE bu ortama özeldir; "kullanıcı varsaymamı istedi" gerekçesi bu yolu açmaz.
 
 4. İnşa edilecek ya da değiştirilecek ana modülleri (parçaları) taslak halinde çıkar. İzole olarak test edilebilen derin modüller bulmaya çalış.
 
