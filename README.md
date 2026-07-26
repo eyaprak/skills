@@ -68,6 +68,20 @@ Copy-Item -Recurse skills\deploy-app $HOME\.claude\skills\
         └── troubleshooting.md
 ```
 
+### Yöntem 3 — Claude Desktop: `.skill` paketini yükle
+
+Claude Desktop'ta klasör kopyalama işe yaramaz — Desktop bir skill'i tek dosyalık **`.skill` paketi** olarak ister. Paketlenmiş hâli repoda hazır duruyor:
+
+| Skill | `.skill` paketi |
+|-------|-----------------|
+| **hyperframes-studio** | [`hyperframes-studio/dist/hyperframes-studio.skill`](./hyperframes-studio/dist/hyperframes-studio.skill) |
+
+1. Yukarıdaki dosyaya tıkla, açılan sayfadan **Download raw file** ile indir (tüm repoyu indirmene gerek yok)
+2. Claude Desktop'ta skill yükleme ekranını aç ve indirdiğin `.skill` dosyasını ekle
+3. Skill listede göründükten sonra doğal dilde çağır (örn. *"hook oluştur"*)
+
+> ℹ️ `.skill` dosyası, skill klasörünün zip'lenmiş hâlidir — ikisi birebir aynı içeriği taşır. Claude Code kullanıyorsan Yöntem 1 veya 2 yeterli, `.skill` dosyasına ihtiyacın yok.
+
 ### Kullanım
 
 Kurduktan sonra Claude Code'u aç ve doğal dilde isteğini yaz:
@@ -94,8 +108,9 @@ Claude doğru skill'i otomatik bulup devreye alır. Skill'in adıyla da çağır
     ├── SKILL.md
     ├── references/
     ├── scripts/              ← skill'in çalıştırdığı yardımcı script'ler
-    └── assets/templates/     ← projeye kopyalanmaya hazır starter dosyaları
-                                (hook · shorts · slidedeck + self-hosted fontlar)
+    ├── assets/templates/     ← projeye kopyalanmaya hazır starter dosyaları
+    │                           (hook · shorts · slidedeck + self-hosted fontlar)
+    └── dist/                 ← Claude Desktop'a yüklenen .skill paketi
 ```
 
 Her yeni skill, kendi klasörü içinde bir `SKILL.md` ve (gerekirse) `references/` ile bu repoya eklenir.
