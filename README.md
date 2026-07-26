@@ -26,6 +26,7 @@ YouTube kanalımda Claude Code ile neler yapılabileceğini anlatıyorum. Videol
 | Skill | Ne yapar? | Tetikleyen ifadeler |
 |-------|-----------|---------------------|
 | [**deploy-app**](./deploy-app) | Kendi web uygulamanı (Next.js, Node, statik site, Python) ya da hazır bir açık kaynak uygulamayı (WordPress, n8n, Evolution API, Ghost, Metabase, Uptime Kuma…) Hostinger VPS'ine kurup kendi alan adında **HTTPS** ile canlıya alır. SSH/panel bilmene gerek yok. | *"uygulamamı yayına al"*, *"siteyi canlıya çıkar"*, *"deploy et"*, *"wordpress kur"*, *"n8n kur"* |
+| [**hyperframes-studio**](./hyperframes-studio) | Ham konuşma klibini + transcript'ini (ya da düz bir içeriği) alıp [HyperFrames](https://www.npmjs.com/package/hyperframes) ile bitmiş bir video üretir: yatay **hook** (16:9 intro), dikey **Shorts** (9:16, altyazılı) ya da animasyonlu **slidedeck** (16:9 sunum). Koyu tema, tek marka rengi, self-hosted Manrope + JetBrains Mono; hook/shorts **1080p · 60fps** MP4'e render edilir, deck HTML sunum olarak teslim edilir. Paket içinde tak-çalıştır starter template'ler gelir. | *"hook oluştur"*, *"intro yap"*, *"shorts oluştur"*, *"dikey video"*, *"slidedeck oluştur"*, *"sunum yap"* |
 | [**prd-yaz**](./prd-yaz) | Seni adım adım sorgulayarak, dağınık bir fikri net bir PRD'ye (ürün gereksinim belgesine) dönüştürür ve `prd.md` dosyasına yazar. Yapay zeka ile kod yazmadan önce işi netleştirmenin temeli. | *"prd yaz"*, *"ürün gereksinim belgesi oluştur"*, *"yeni özellik planla"* |
 | [**seo-expert**](./seo-expert) | Uçtan uca SEO içerik üretim hattı: trend analizi → derin araştırma → önce taslak (outline) onayı → bölüm bölüm yazım → 18 kontrollü kalite kapısı (puan < 70 ise 2 kez otomatik yeniden dener) → yayına hazır temiz semantik **HTML** çıktısı. Sadece bir konu vermen yeterli; Claude Desktop, Web ve Code'da script/veritabanı gerektirmeden çalışır. | *"blog yazısı yaz"*, *"SEO içeriği oluştur"*, *"araştır ve yaz"*, *"şu konu hakkında makale yaz"*, *"/seo-expert"* |
 
@@ -77,7 +78,7 @@ Kurduktan sonra Claude Code'u aç ve doğal dilde isteğini yaz:
 
 Claude doğru skill'i otomatik bulup devreye alır. Skill'in adıyla da çağırabilirsin (örn. `/deploy-app`).
 
-> 💡 Bazı skill'ler (deploy-app gibi) ek araçlara ihtiyaç duyar — örneğin **Hostinger MCP**. Her skill'in kendi `SKILL.md` dosyasında gereksinimleri ve adımları yazılıdır; kurmadan önce göz at.
+> 💡 Bazı skill'ler ek araçlara ihtiyaç duyar — `deploy-app` için **Hostinger MCP**, `hyperframes-studio` için **Node.js + npx** ve PATH'te **ffmpeg**. Her skill'in kendi `SKILL.md` dosyasında gereksinimleri ve adımları yazılıdır; kurmadan önce göz at.
 
 ---
 
@@ -85,10 +86,16 @@ Claude doğru skill'i otomatik bulup devreye alır. Skill'in adıyla da çağır
 
 ```
 .
-├── README.md            ← buradasın
-└── deploy-app/          ← bir skill = bir klasör
-    ├── SKILL.md         ← skill'in beyni: ne yapacağını anlatan talimatlar
-    └── references/      ← Claude'un gerektiğinde okuduğu detay dosyaları
+├── README.md                 ← buradasın
+├── deploy-app/               ← bir skill = bir klasör
+│   ├── SKILL.md              ← skill'in beyni: ne yapacağını anlatan talimatlar
+│   └── references/           ← Claude'un gerektiğinde okuduğu detay dosyaları
+└── hyperframes-studio/       ← bazı skill'ler ek varlıklar da taşır
+    ├── SKILL.md
+    ├── references/
+    ├── scripts/              ← skill'in çalıştırdığı yardımcı script'ler
+    └── assets/templates/     ← projeye kopyalanmaya hazır starter dosyaları
+                                (hook · shorts · slidedeck + self-hosted fontlar)
 ```
 
 Her yeni skill, kendi klasörü içinde bir `SKILL.md` ve (gerekirse) `references/` ile bu repoya eklenir.

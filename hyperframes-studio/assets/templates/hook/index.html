@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* ============================================================
+         HOOK STARTER — horizontal 16:9 (1920×1080), NO captions.
+         A hook earns the first ~15–25s of a long video: grab attention,
+         show a demo big, hand off into the main video.
+         Renders as-is (placeholder speaker). Swap in your own footage
+         where marked. Recolor by editing --brand + --brand-light only.
+         Full engine reference: ../../../references/engine.md
+         ============================================================ */
+
+      /* Self-hosted fonts — Turkish glyphs (ç ğ ı ş ö ü). Do not use CDN fonts. */
+      @font-face { font-family:"Manrope"; src:url("fonts/manrope-latin.woff2") format("woff2"); font-weight:200 800; font-style:normal; unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+      @font-face { font-family:"Manrope"; src:url("fonts/manrope-latinext.woff2") format("woff2"); font-weight:200 800; font-style:normal; unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+      @font-face { font-family:"JetBrains Mono"; src:url("fonts/jbmono-latin.woff2") format("woff2"); font-weight:100 800; font-style:normal; unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+      @font-face { font-family:"JetBrains Mono"; src:url("fonts/jbmono-latinext.woff2") format("woff2"); font-weight:100 800; font-style:normal; unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+
+      :root{
+        /* --- Brand: change these two, the rest derive from them (see engine.md §brand-derivation) --- */
+        --brand:#6366f1;               /* PRIMARY */
+        --brand-light:#a5b4fc;         /* highlight / accents */
+        /* --- Derived dark theme --- */
+        --bg:#0b0b12;
+        --text:#eef1f6;
+        --dim:rgba(238,241,246,0.60);
+        --line:rgba(99,102,241,0.28);
+        --glow:rgba(99,102,241,0.22);
+      }
+
+      *{margin:0;padding:0;box-sizing:border-box;}
+      html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:"Manrope",system-ui,sans-serif;color:var(--text);}
+
+      /* ---- backdrop (track 3): base bg + glows + grid ---- */
+      #backdrop{position:absolute;inset:0;width:1920px;height:1080px;z-index:0;background:var(--bg);}
+      #backdrop .grid{position:absolute;inset:0;background-image:linear-gradient(var(--brand-light) 1px,transparent 1px),linear-gradient(90deg,var(--brand-light) 1px,transparent 1px);background-size:72px 72px;opacity:0.05;}
+      #backdrop .glow-a{position:absolute;bottom:-260px;left:-160px;width:820px;height:820px;border-radius:9999px;background:radial-gradient(circle,var(--glow),transparent 62%);filter:blur(60px);}
+      #backdrop .glow-b{position:absolute;top:-240px;right:-160px;width:700px;height:700px;border-radius:9999px;background:radial-gradient(circle,var(--glow),transparent 64%);filter:blur(60px);}
+
+      /* ---- speaker (track 0): full-frame placeholder; swap for your re-encoded clip ---- */
+      #vidframe{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;background:#08080e;z-index:1;}
+      #vid{display:block;width:100%;height:100%;object-fit:cover;
+           background:radial-gradient(140% 120% at 72% 40%,#1b1b27 0%,#0d0d15 55%,#08080e 100%);}
+      #vid .placeholder{position:absolute;left:120px;bottom:120px;font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:600;color:var(--dim);letter-spacing:0.02em;}
+      #vid .placeholder b{color:var(--brand-light);font-weight:800;}
+      /* legibility scrim so overlay text reads on any footage (nested in overlay, painted below its text) */
+      #scrim{position:absolute;inset:0;pointer-events:none;
+             background:linear-gradient(103deg,rgba(6,6,10,0.82)0%,rgba(6,6,10,0.30)30%,rgba(6,6,10,0)52%),
+                        linear-gradient(0deg,rgba(6,6,10,0.80)0%,rgba(6,6,10,0.10)22%,rgba(6,6,10,0)34%);}
+
+      /* ---- overlay (track 1) ---- */
+      #overlay{position:absolute;inset:0;width:1920px;height:1080px;z-index:5;}
+
+      /* opening title block (slides in from the left) */
+      #intro{position:absolute;left:120px;top:360px;max-width:900px;}
+      #kicker{display:inline-flex;align-items:center;gap:12px;font-family:"JetBrains Mono",monospace;font-size:22px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brand-light);}
+      #kicker .dot{width:12px;height:12px;border-radius:50%;background:var(--brand);box-shadow:0 0 14px var(--brand);}
+      #title{margin-top:22px;font-size:108px;font-weight:800;line-height:1.02;letter-spacing:-0.03em;}
+      #title .g{color:var(--brand-light);}
+      #subtitle{margin-top:26px;font-size:34px;font-weight:500;line-height:1.35;color:var(--dim);max-width:760px;}
+
+      /* demo-plays-big stage: a mock window that scales up with a darkening overlay */
+      #demoDim{position:absolute;inset:0;background:rgba(7,7,12,0.92);z-index:6;opacity:0;}
+      #demo{position:absolute;left:360px;top:150px;width:1200px;z-index:7;opacity:0;
+            background:#0d0d15;border:1.5px solid var(--line);border-radius:18px;overflow:hidden;
+            box-shadow:0 44px 130px rgba(0,0,0,0.75);transform-origin:center center;}
+      #demo .bar{height:54px;background:#14141d;display:flex;align-items:center;gap:11px;padding:0 22px;border-bottom:1px solid rgba(255,255,255,0.06);}
+      #demo .bar i{width:14px;height:14px;border-radius:50%;flex:none;display:block;}
+      #demo .bar i:nth-child(1){background:#ff5f57;} #demo .bar i:nth-child(2){background:#febc2e;} #demo .bar i:nth-child(3){background:#28c840;}
+      #demo .url{margin-left:16px;flex:1;height:34px;border-radius:9px;background:rgba(255,255,255,0.06);display:flex;align-items:center;padding:0 16px;font-family:"JetBrains Mono",monospace;font-size:16px;color:var(--dim);}
+      #demo .screen{height:632px;position:relative;background:radial-gradient(120% 120% at 30% 20%,#1a1a27,#0b0b12 70%);display:flex;align-items:center;justify-content:center;}
+      #demo .screen span{font-family:"JetBrains Mono",monospace;font-size:24px;color:var(--dim);}
+      #demo .screen b{color:var(--brand-light);}
+
+      /* logo/topic chips that fly in from the sides */
+      .chip{position:absolute;display:inline-flex;align-items:center;gap:14px;padding:18px 28px;border-radius:14px;
+            background:rgba(13,13,21,0.9);border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,0.5);
+            font-size:30px;font-weight:700;z-index:8;opacity:0;}
+      .chip .ic{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--brand-light));flex:none;}
+      #chipR{right:130px;top:300px;}
+      #chipL{left:130px;top:470px;}
+
+      /* closing bridge line (full-frame, no caption band — a hook has no subtitles) */
+      #close{position:absolute;left:0;right:0;bottom:150px;text-align:center;z-index:9;opacity:0;}
+      #close .line{display:inline-flex;align-items:center;gap:18px;font-size:46px;font-weight:800;letter-spacing:-0.01em;}
+      #close .arrow{color:var(--brand-light);}
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="18" data-width="1920" data-height="1080">
+
+      <div id="backdrop" class="clip" data-track-index="3" data-start="0" data-duration="18">
+        <div class="grid"></div><div class="glow-a"></div><div class="glow-b"></div>
+      </div>
+
+      <!-- GERÇEK GÖRÜNTÜ: re-encode edilmiş klibini assets/ içine koy (örn. konusma-src.mp4). Sonra
+           aşağıdaki #vidframe placeholder div'ini, track-index 0'da bir video + track-index 2'de aynı
+           dosyayı çalan bir audio elemanıyla değiştir. Tam işaretleme örneği references/hook.md içinde. -->
+      <div id="vidframe" class="clip" data-track-index="0" data-start="0" data-duration="18">
+        <div id="vid"><div class="placeholder">▶ Konuşmacı videosu buraya — <b>assets/&lt;ad&gt;-src.mp4</b></div></div>
+      </div>
+
+      <div id="overlay" class="clip" data-track-index="1" data-start="0" data-duration="18">
+        <div id="scrim"></div>
+
+        <div id="intro">
+          <div id="kicker"><span class="dot"></span>KANCA / HOOK</div>
+          <div id="title">Buraya <span class="g">çarpıcı</span> bir başlık</div>
+          <div id="subtitle">İlk 20 saniyede izleyiciyi tut: vaadi göster, merak yarat, ana videoya bağla.</div>
+        </div>
+
+        <div id="demoDim"></div>
+        <div id="demo">
+          <div class="bar"><i></i><i></i><i></i><span class="url">https://urunun.com</span></div>
+          <div class="screen"><span>Demo / ürün gösterimi <b>büyük</b> oynar</span></div>
+        </div>
+
+        <div id="chipR" class="chip"><span class="ic"></span>Özellik bir</div>
+        <div id="chipL" class="chip"><span class="ic"></span>Özellik iki</div>
+
+        <div id="close"><div class="line">Devamı videoda <span class="arrow">↓</span></div></div>
+      </div>
+    </div>
+
+    <script>
+      /* Deterministic, paused timeline registered on window.__timelines.
+         Position parameters are LITERAL seconds (the lint static-analysis needs literals, not
+         variables) — anchor each beat to a transcript second. Every scene enters; the demo and
+         chips clear before the next beat; the closing bridge is the final beat. */
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // beat 1 (0.4s) — opening title slides in from the left
+      tl.from("#kicker",   { x:-60, opacity:0, duration:0.6, ease:"expo.out" }, 0.4);
+      tl.from("#title",    { x:-70, opacity:0, duration:0.8, ease:"power3.out" }, 0.55);
+      tl.from("#subtitle", { x:-50, opacity:0, duration:0.7, ease:"power3.out" }, 0.9);
+
+      // beat 2 (5.0s) — demo plays big: darken, scale in, subtle hold, clear
+      tl.to("#demoDim", { opacity:1, duration:0.5, ease:"power2.out" }, 5.0);
+      tl.fromTo("#demo", { opacity:0, scale:0.9 }, { opacity:1, scale:1, duration:0.7, ease:"power3.out" }, 5.1);
+      tl.to("#demo", { scale:1.02, duration:1.6, ease:"sine.inOut", yoyo:true, repeat:1 }, 6.0);
+      tl.to("#demo",    { opacity:0, scale:0.96, duration:0.5, ease:"power2.in" }, 9.4);
+      tl.to("#demoDim", { opacity:0, duration:0.5, ease:"power2.in" }, 9.4);
+
+      // beat 3 (10.0s) — topic chips fly in from opposite sides, then clear
+      tl.fromTo("#chipR", { x:120, opacity:0 }, { x:0, opacity:1, duration:0.6, ease:"back.out(1.8)" }, 10.0);
+      tl.fromTo("#chipL", { x:-120, opacity:0 }, { x:0, opacity:1, duration:0.6, ease:"back.out(1.8)" }, 10.25);
+      tl.to("#chipR", { opacity:0, x:60, duration:0.4, ease:"power2.in" }, 14.1);
+      tl.to("#chipL", { opacity:0, x:-60, duration:0.4, ease:"power2.in" }, 14.1);
+
+      // beat 4 (14.6s) — closing bridge into the main video (final beat)
+      tl.to("#intro", { opacity:0, y:-20, duration:0.5, ease:"power2.in" }, 14.4);
+      tl.fromTo("#close", { opacity:0, y:24 }, { opacity:1, y:0, duration:0.6, ease:"back.out(1.5)" }, 14.6);
+      tl.to("#close .arrow", { y:10, duration:0.6, ease:"sine.inOut", yoyo:true, repeat:2 }, 15.2);
+
+      tl.seek(0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
