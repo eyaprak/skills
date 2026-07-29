@@ -1,0 +1,10 @@
+{
+  "name": "hyperframes-studio-slidedeck-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.6.16 preview",
+    "check": "npx --yes hyperframes@0.6.16 lint && npx --yes hyperframes@0.6.16 validate && npx --yes hyperframes@0.6.16 inspect",
+    "render": "npx --yes hyperframes@0.6.16 render"
+  }
+}

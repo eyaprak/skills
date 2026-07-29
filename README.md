@@ -26,7 +26,7 @@ YouTube kanalımda Claude Code ile neler yapılabileceğini anlatıyorum. Videol
 | Skill | Ne yapar? | Tetikleyen ifadeler |
 |-------|-----------|---------------------|
 | [**deploy-app**](./deploy-app) | Kendi web uygulamanı (Next.js, Node, statik site, Python) ya da hazır bir açık kaynak uygulamayı (WordPress, n8n, Evolution API, Ghost, Metabase, Uptime Kuma…) Hostinger VPS'ine kurup kendi alan adında **HTTPS** ile canlıya alır. SSH/panel bilmene gerek yok. | *"uygulamamı yayına al"*, *"siteyi canlıya çıkar"*, *"deploy et"*, *"wordpress kur"*, *"n8n kur"* |
-| [**hyperframes-studio**](./hyperframes-studio) | Ham konuşma klibini + transcript'ini (ya da düz bir içeriği) alıp [HyperFrames](https://www.npmjs.com/package/hyperframes) ile bitmiş bir video üretir: yatay **hook** (16:9 intro), dikey **Shorts** (9:16, altyazılı) ya da animasyonlu **slidedeck** (16:9 sunum). Koyu tema, tek marka rengi, self-hosted Manrope + JetBrains Mono; hook/shorts **1080p · 60fps** MP4'e render edilir, deck HTML sunum olarak teslim edilir. Paket içinde tak-çalıştır starter template'ler gelir. 📦 Tek dosyalık `.skill` paketi olarak dağıtılır. | *"hook oluştur"*, *"intro yap"*, *"shorts oluştur"*, *"dikey video"*, *"slidedeck oluştur"*, *"sunum yap"* |
+| [**hyperframes-studio**](./hyperframes-studio) | Ham konuşma klibini + transcript'ini (ya da düz bir içeriği) alıp [HyperFrames](https://www.npmjs.com/package/hyperframes) ile bitmiş bir video üretir: yatay **hook** (16:9 intro), dikey **Shorts** (9:16, altyazılı) ya da animasyonlu **slidedeck** (16:9 sunum). Koyu tema, tek marka rengi, self-hosted Manrope + JetBrains Mono; hook/shorts **1080p · 60fps** MP4'e render edilir, deck HTML sunum olarak teslim edilir. İçinde tak-çalıştır starter template'ler gelir. | *"hook oluştur"*, *"intro yap"*, *"shorts oluştur"*, *"dikey video"*, *"slidedeck oluştur"*, *"sunum yap"* |
 | [**prd-yaz**](./prd-yaz) | Seni adım adım sorgulayarak, dağınık bir fikri net bir PRD'ye (ürün gereksinim belgesine) dönüştürür ve `prd.md` dosyasına yazar. Yapay zeka ile kod yazmadan önce işi netleştirmenin temeli. | *"prd yaz"*, *"ürün gereksinim belgesi oluştur"*, *"yeni özellik planla"* |
 | [**seo-expert**](./seo-expert) | Uçtan uca SEO içerik üretim hattı: trend analizi → derin araştırma → önce taslak (outline) onayı → bölüm bölüm yazım → 18 kontrollü kalite kapısı (puan < 70 ise 2 kez otomatik yeniden dener) → yayına hazır temiz semantik **HTML** çıktısı. Sadece bir konu vermen yeterli; Claude Desktop, Web ve Code'da script/veritabanı gerektirmeden çalışır. | *"blog yazısı yaz"*, *"SEO içeriği oluştur"*, *"araştır ve yaz"*, *"şu konu hakkında makale yaz"*, *"/seo-expert"* |
 
@@ -36,14 +36,14 @@ YouTube kanalımda Claude Code ile neler yapılabileceğini anlatıyorum. Videol
 
 ## 🚀 Kurulum
 
-Bu repoda skill'ler **iki biçimde** dağıtılıyor. Hangisini kuracağını aşağıdaki tablodan seç:
+Bu repodaki **her skill bir klasördür** — kurulum, o klasörü skill dizinine kopyalamaktan ibaret. Claude Code, Codex, Antigravity gibi `SKILL.md` okuyan araçların hepsi klasör bekler.
 
-| Biçim | Hangi skill'ler | Nasıl kurulur |
-|-------|-----------------|---------------|
-| 📁 **Klasör** — `SKILL.md` + `references/` | `deploy-app` · `prd-yaz` · `seo-expert` | Klasörü `~/.claude/skills/` altına kopyala → **Yöntem 1–2** |
-| 📦 **`.skill` paketi** — tek dosya | `hyperframes-studio` | Claude Desktop'a yükle → **Yöntem 3**<br>Claude Code için paketi aç → **Yöntem 4** |
+Tek istisna **Claude Desktop**: o klasör kabul etmez, tek dosyalık bir `.skill` paketi ister. Bu yüzden `hyperframes-studio` klasörünün zip'lenmiş hâli ayrıca [`dist/`](./dist) altında duruyor — aynı içerik, sadece paketlenmiş.
 
-> **Neden bazı skill'ler tek dosya?** Claude Desktop bir skill'i klasör olarak kabul etmiyor, tek dosyalık bir **`.skill` paketi** bekliyor. `hyperframes-studio` ayrıca sadece talimat dosyalarından oluşmuyor: içinde üç mod için hazır starter template'ler ve self-hosted font dosyaları da var (39 dosya). Bu ikisi birleşince paketi tek dosya olarak dağıtmak en pratik yol oluyor — `.skill`, o klasörün zip'lenmiş hâlidir, hiçbir içerik eksilmez.
+| Nereye kuracaksın | Nasıl |
+|-------------------|-------|
+| Claude Code · Codex · Antigravity … | Skill klasörünü kopyala → **Yöntem 1–2** |
+| Claude Desktop | `dist/*.skill` paketini yükle → **Yöntem 3** |
 
 ### Yöntem 1 — Repoyu klonla, istediğin skill'i kopyala
 
@@ -61,7 +61,7 @@ Copy-Item -Recurse skills\deploy-app $HOME\.claude\skills\
 
 ### Yöntem 2 — Sadece tek bir skill istiyorsan
 
-`deploy-app` klasörünü olduğu gibi indirip `~/.claude/skills/deploy-app` konumuna yerleştir. Klasör yapısı aynen korunmalı:
+İlgili klasörü olduğu gibi indirip `~/.claude/skills/<skill-adı>` konumuna yerleştir. Klasör adı ve iç yapısı aynen korunmalı — skill adı klasör adından okunuyor:
 
 ```
 ~/.claude/skills/
@@ -75,32 +75,19 @@ Copy-Item -Recurse skills\deploy-app $HOME\.claude\skills\
         └── troubleshooting.md
 ```
 
+Aynı mantık Codex, Antigravity gibi `SKILL.md` okuyan diğer araçlar için de geçerli: klasörü o aracın kendi skill dizinine kopyalaman yeterli, dönüştürme gerekmez.
+
 ### Yöntem 3 — Claude Desktop: `.skill` paketini yükle
 
-Claude Desktop'ta klasör kopyalama işe yaramaz — Desktop bir skill'i tek dosyalık **`.skill` paketi** olarak ister. Paket repoda hazır duruyor:
+Claude Desktop'ta klasör kopyalama işe yaramaz — Desktop bir skill'i tek dosyalık **`.skill` paketi** olarak ister. Paketler hazır duruyor:
 
 | Skill | `.skill` paketi |
 |-------|-----------------|
-| **hyperframes-studio** | [`hyperframes-studio/hyperframes-studio.skill`](./hyperframes-studio/hyperframes-studio.skill) |
+| **hyperframes-studio** | [`dist/hyperframes-studio.skill`](./dist/hyperframes-studio.skill) |
 
 1. Yukarıdaki dosyaya tıkla, açılan sayfadan **Download raw file** ile indir (tüm repoyu indirmene gerek yok)
 2. Claude Desktop'ta skill yükleme ekranını aç ve indirdiğin `.skill` dosyasını ekle
 3. Skill listede göründükten sonra doğal dilde çağır (örn. *"hook oluştur"*)
-
-### Yöntem 4 — Claude Code'a `.skill` paketi kurmak
-
-Claude Code `.skill` dosyasını doğrudan okumaz; paketi açıp klasörü `~/.claude/skills/` altına koyman gerekir. `.skill` bir zip arşividir ve kökünde skill klasörünü taşır, dolayısıyla doğrudan hedefe açabilirsin:
-
-```bash
-# macOS / Linux
-unzip hyperframes-studio.skill -d ~/.claude/skills/
-
-# Windows (PowerShell) — Expand-Archive .zip uzantısı ister
-Copy-Item hyperframes-studio.skill hyperframes-studio.zip
-Expand-Archive hyperframes-studio.zip -DestinationPath $HOME\.claude\skills\
-```
-
-Sonuç `~/.claude/skills/hyperframes-studio/` altında `SKILL.md`, `references/`, `scripts/` ve `assets/templates/` olur.
 
 ### Kullanım
 
@@ -118,21 +105,26 @@ Claude doğru skill'i otomatik bulup devreye alır. Skill'in adıyla da çağır
 
 ## 📂 Repo yapısı
 
+Kökteki her klasör, olduğu gibi kopyalanabilir bir skill'dir. `dist/` ise bu klasörlerin Claude Desktop için paketlenmiş hâlini tutar — ayrı bir içerik değil, aynı klasörün zip'i.
+
 ```
 .
 ├── README.md                 ← buradasın
-├── deploy-app/               ← 📁 klasör biçimi: bir skill = bir klasör
+├── deploy-app/               ← bir skill = bir klasör
 │   ├── SKILL.md              ← skill'in beyni: ne yapacağını anlatan talimatlar
 │   └── references/           ← Claude'un gerektiğinde okuduğu detay dosyaları
-└── hyperframes-studio/       ← 📦 paket biçimi
-    ├── README.md             ← paketin içeriği, kurulumu ve gereksinimleri
+├── hyperframes-studio/
+│   ├── README.md             ← skill'in kendi kurulum & gereksinim notları
+│   ├── SKILL.md
+│   ├── references/
+│   ├── scripts/              ← skill'in çağırdığı yardımcı script'ler
+│   └── assets/templates/     ← starter kompozisyonlar + self-hosted fontlar
+└── dist/                     ← 📦 Claude Desktop için tek dosyalık paketler
     └── hyperframes-studio.skill
-                              ← klasörün zip'lenmiş hâli: SKILL.md, references/,
-                                scripts/ ve assets/templates/ (starter'lar +
-                                self-hosted fontlar) hepsi bu tek dosyanın içinde
+                              ← yukarıdaki klasörün zip'lenmiş hâli
 ```
 
-Her yeni skill, kendi klasörü içinde bir `SKILL.md` ve (gerekirse) `references/` ile bu repoya eklenir. Starter dosyası, font gibi ek varlıklar taşıyan skill'ler ise tek bir `.skill` paketi olarak dağıtılır — hem Claude Desktop bunu istediği için, hem de onlarca dosyayı tek tek indirmek zorunda kalmaman için.
+Her yeni skill, kendi klasörü içinde bir `SKILL.md` ve (gerekirse) `references/` ile bu repoya eklenir. Klasör hâli her zaman kaynaktır; `dist/` altındaki paket ondan üretilir.
 
 ---
 

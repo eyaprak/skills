@@ -2,9 +2,9 @@
 
 > HyperFrames ile **hook** (yatay 16:9 intro), **Shorts** (dikey 9:16) ya da animasyonlu **slidedeck** (16:9 sunum) üretir. Ham konuşma klibini + transcript'ini (ya da düz bir içeriği) verirsin; koyu tema, tek marka rengi ve self-hosted fontlarla bitmiş bir kompozisyon çıkar.
 
-Bu klasörde skill'in **paketlenmiş hâli** duruyor: [`hyperframes-studio.skill`](./hyperframes-studio.skill) — 39 dosyalık skill klasörünün zip'lenmiş hâli. Açılmış dosyalar repoda ayrıca tutulmuyor; böylece tek bir kaynak oluyor ve paketle içerik zamanla birbirinden ayrı düşmüyor.
+Bu klasörün kendisi skill'dir — olduğu gibi skill dizinine kopyalanır. Claude Desktop klasör kabul etmediği için aynı içeriğin paketlenmiş hâli ayrıca [`dist/hyperframes-studio.skill`](../dist/hyperframes-studio.skill) altında duruyor.
 
-## Paketin içinde ne var?
+## Klasörde ne var?
 
 | Yol | Ne işe yarar |
 |-----|--------------|
@@ -17,20 +17,19 @@ Bu klasörde skill'in **paketlenmiş hâli** duruyor: [`hyperframes-studio.skill
 
 ## Kurulum
 
-**Claude Desktop** — `hyperframes-studio.skill` dosyasını indir ve skill yükleme ekranından ekle. Desktop klasör kabul etmez, paketi ister.
-
-**Claude Code** — paketi açıp klasörü skill dizinine koy:
+**Claude Code** — klasörü olduğu gibi skill dizinine kopyala:
 
 ```bash
 # macOS / Linux
-unzip hyperframes-studio.skill -d ~/.claude/skills/
+cp -r hyperframes-studio ~/.claude/skills/
 
-# Windows (PowerShell) — Expand-Archive .zip uzantısı ister
-Copy-Item hyperframes-studio.skill hyperframes-studio.zip
-Expand-Archive hyperframes-studio.zip -DestinationPath $HOME\.claude\skills\
+# Windows (PowerShell)
+Copy-Item -Recurse hyperframes-studio $HOME\.claude\skills\
 ```
 
-Zip kökünde `hyperframes-studio/` klasörü bulunduğu için doğrudan `~/.claude/skills/hyperframes-studio/` altına açılır — yeniden adlandırmaya gerek yok.
+**SKILL.md okuyan diğer araçlar** (Codex, Antigravity vb.) — aynı klasörü o aracın kendi skill dizinine kopyala. Klasör adı `hyperframes-studio` kalmalı, skill adıyla eşleşiyor.
+
+**Claude Desktop** — Desktop klasör kabul etmez, tek dosyalık paketi ister: [`dist/hyperframes-studio.skill`](../dist/hyperframes-studio.skill) dosyasını indirip skill yükleme ekranından ekle.
 
 ## Gereksinimler
 
