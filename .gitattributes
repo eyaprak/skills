@@ -1,3 +1,6 @@
 # .skill paketleri zip arşividir: satır sonu dönüşümü uygulanırsa dosya bozulur
 # ve Claude Desktop yükleyemez. Her platformda binary olarak işlenmeli.
 *.skill binary
+
+# Self-hosted font dosyaları da binary; satır sonu dönüşümü fontu bozar.
+*.woff2 binary
