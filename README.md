@@ -93,9 +93,9 @@ Claude Desktop'ta klasör kopyalama işe yaramaz — Desktop bir skill'i tek dos
 
 ### Yöntem 4 — Hermes Agent: depo linkini ver, gerisini o yapsın
 
-`fatura-kutusu` bir Claude Code skill'i değil, [Hermes Agent](https://github.com/NousResearch/hermes-agent) skill'i; sunucuda çalışan Hermes'in `skills/productivity/` dizinine gider. Terminal gerekmez, Hermes'e şunu yaz:
+`fatura-kutusu` bir Claude Code skill'i değil, [Hermes Agent](https://github.com/NousResearch/hermes-agent) skill'i; sunucuda çalışan Hermes'in `skills/productivity/` dizinine gider. Terminal gerekmez, Hermes'e tek mesaj yeter; talimat dosyasını okur, paketi kurar ve kurulum sihirbazını hemen başlatır:
 
-> https://github.com/eyaprak/skills deposundaki `fatura-kutusu` klasörünü `skills/productivity/fatura-kutusu` olarak kur ve beceriyi yükle.
+> Şu adresteki kurulum talimatını oku ve adımları sırayla uygula: https://raw.githubusercontent.com/eyaprak/skills/main/fatura-kutusu/INSTALL.md
 
 Kendin yapmak istersen sunucuda tek satır (yalnızca o klasörü çeker):
 
@@ -103,7 +103,7 @@ Kendin yapmak istersen sunucuda tek satır (yalnızca o klasörü çeker):
 git clone --depth 1 --filter=blob:none --sparse https://github.com/eyaprak/skills /tmp/eyaprak-skills && git -C /tmp/eyaprak-skills sparse-checkout set fatura-kutusu && cp -r /tmp/eyaprak-skills/fatura-kutusu "${HERMES_HOME:-/opt/data}/skills/productivity/" && rm -rf /tmp/eyaprak-skills
 ```
 
-Sonrası için [fatura-kutusu/README.md](./fatura-kutusu/README.md): Hermes'e "Fatura kutusunu kur" de, kalan adımları (Google izni, Mistral anahtarı, klasörler ve tablo) sohbetten kendisi yürütür.
+Kalan adımları (Google izni, Mistral anahtarı, klasörler ve tablo) Hermes sohbetten kendisi yürütür; ayrıntı [fatura-kutusu/README.md](./fatura-kutusu/README.md).
 
 ### Kullanım
 
@@ -136,7 +136,8 @@ Kökteki her klasör, olduğu gibi kopyalanabilir bir skill'dir. `dist/` ise bu 
 │   ├── scripts/              ← skill'in çağırdığı yardımcı script'ler
 │   └── assets/templates/     ← starter kompozisyonlar + self-hosted fontlar
 ├── fatura-kutusu/              ← Hermes Agent skill'i (sunucuda çalışır)
-│   ├── README.md             ← izleyici kurulumu: dört mesaj, terminal yok
+│   ├── README.md             ← izleyici belgesi: tek mesaj, terminal yok
+│   ├── INSTALL.md            ← Hermes'in okuyup uyguladığı kurulum talimatı
 │   ├── SKILL.md              ← Hermes'in okuduğu aşamalar ve komutlar
 │   ├── scripts/fatura_kutusu.py      ← kontroller, Drive/Sheets/Telegram işleri burada
 │   └── references/

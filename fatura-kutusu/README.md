@@ -2,7 +2,7 @@
 
 **Hermes Agent** skill'i. Google Drive'da bir klasöre attığın faturaları okur, kontrol eder, Google Sheets'e belgenin bağlantısıyla birlikte kaydeder, tutmayan belgeyi kaydetmeyip Telegram'dan sorar, ay sonunda özet gönderir. Bilgisayarın kapalıyken de çalışır, çünkü sunucudaki Hermes çalıştırır.
 
-Bu bir Claude Code skill'i değil; sunucuda çalışan [Hermes Agent](https://github.com/NousResearch/hermes-agent) için yazıldı. Terminal yok, komut yok: aşağıdaki mesajları sırayla Hermes'e yazıyorsun, gerisini o yapıyor.
+Bu bir Claude Code skill'i değil; sunucuda çalışan [Hermes Agent](https://github.com/NousResearch/hermes-agent) için yazıldı. Terminal yok, komut yok: Hermes'e tek bir mesaj yazıyorsun, gerisini o yapıyor.
 
 ## Ne yapar
 
@@ -36,19 +36,13 @@ Toplam süre yaklaşık 20 dakika; bunun 10 dakikası Google tarafındaki tek se
 
 ---
 
-## 1. Paketi kur
+## 1. Tek mesajla kur
 
 Hermes'e şunu yaz:
 
-> https://github.com/eyaprak/skills deposundaki `fatura-kutusu` klasörünü `skills/productivity/fatura-kutusu` olarak kur ve beceriyi yükle.
+> Şu adresteki kurulum talimatını oku ve adımları sırayla uygula: https://raw.githubusercontent.com/eyaprak/skills/main/fatura-kutusu/INSTALL.md
 
-Hermes depoyu indirir, klasörü doğru yere koyar, dosya sahipliğini düzeltir. "Kuruldu" dediğinde 2. adıma geç.
-
-## 2. Kurulumu başlat
-
-> Fatura kutusunu kur
-
-Bundan sonrasını Hermes yürütür ve sırayla üç şey ister.
+Hermes talimat dosyasını okur, paketi indirip doğru yere koyar ve kurulumu hemen başlatır. Sırayla üç şey ister.
 
 **Google izni.** Hermes beş adımlık bir yol tarif eder; hepsi tarayıcıda, Google Cloud Console'da:
 
@@ -64,7 +58,7 @@ Sonra Hermes bir izin bağlantısı verir. Tıkla, izin ver. Sayfa hata verir gi
 
 **Klasörler ve tablo.** Hermes Drive'da `Fatura-Kutusu` klasörünü, içinde `01-Gelen`, `02-Islenen`, `03-Hatali` klasörlerini ve `Fatura Kayitlari` tablosunu kurar; linklerini verir.
 
-## 3. Test et
+## 2. Test et
 
 `01-Gelen` klasörüne bir fatura at (PDF ya da fotoğraf), sonra:
 
@@ -78,7 +72,7 @@ Telegram raporu gelmediyse:
 
 > Telegram'a bağla
 
-## 4. Otomatiğe al
+## 3. Otomatiğe al
 
 > Otomatiğe al
 
@@ -125,6 +119,7 @@ Bu sistem muhasebecinin yerini almaz; belgeleri toplayıp düzenli bir tabloya v
 ```
 fatura-kutusu/
 ├── README.md              ← bu dosya
+├── INSTALL.md             ← Hermes'in okuyup uyguladığı kurulum talimatı
 ├── SKILL.md               ← Hermes'in okuduğu talimat: aşamalar, komutlar, kurallar
 ├── scripts/fatura_kutusu.py       ← kurulum, okuma, kontroller, Sheets, Drive, Telegram, rapor
 └── references/uyarlama.md ← başka belge türlerine uyarlama
