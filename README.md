@@ -29,6 +29,7 @@ YouTube kanalımda Claude Code ile neler yapılabileceğini anlatıyorum. Videol
 | [**hyperframes-studio**](./hyperframes-studio) | Ham konuşma klibini + transcript'ini (ya da düz bir içeriği) alıp [HyperFrames](https://www.npmjs.com/package/hyperframes) ile bitmiş bir video üretir: yatay **hook** (16:9 intro), dikey **Shorts** (9:16, altyazılı) ya da animasyonlu **slidedeck** (16:9 sunum). Koyu tema, tek marka rengi, self-hosted Manrope + JetBrains Mono; hook/shorts **1080p · 60fps** MP4'e render edilir, deck HTML sunum olarak teslim edilir. İçinde tak-çalıştır starter template'ler gelir. | *"hook oluştur"*, *"intro yap"*, *"shorts oluştur"*, *"dikey video"*, *"slidedeck oluştur"*, *"sunum yap"* |
 | [**prd-yaz**](./prd-yaz) | Seni adım adım sorgulayarak, dağınık bir fikri net bir PRD'ye (ürün gereksinim belgesine) dönüştürür ve `prd.md` dosyasına yazar. Yapay zeka ile kod yazmadan önce işi netleştirmenin temeli. | *"prd yaz"*, *"ürün gereksinim belgesi oluştur"*, *"yeni özellik planla"* |
 | [**seo-expert**](./seo-expert) | Uçtan uca SEO içerik üretim hattı: trend analizi → derin araştırma → önce taslak (outline) onayı → bölüm bölüm yazım → 18 kontrollü kalite kapısı (puan < 70 ise 2 kez otomatik yeniden dener) → yayına hazır temiz semantik **HTML** çıktısı. Sadece bir konu vermen yeterli; Claude Desktop, Web ve Code'da script/veritabanı gerektirmeden çalışır. | *"blog yazısı yaz"*, *"SEO içeriği oluştur"*, *"araştır ve yaz"*, *"şu konu hakkında makale yaz"*, *"/seo-expert"* |
+| [**fatura-kutusu**](./fatura-kutusu) | **Hermes Agent** skill'i (sunucuda çalışır). Google Drive'daki bir klasöre attığın faturaları okur, üç kontrolden geçirir (tutar eşitliği, zorunlu alanlar, mükerrer), Google Sheets'e belge bağlantısıyla kaydeder, tutmayanı kaydetmeyip Telegram'dan sorar, ay sonunda özet gönderir. Kurulumu sohbetten kendisi yürütür; kontroller modelde değil script'te. | *"fatura kutusunu kur"*, *"belgeleri işle"*, *"otomatiğe al"* |
 
 > 🎬 Yeni videolarda gösterdikçe bu liste büyüyecek.
 
@@ -44,6 +45,7 @@ Tek istisna **Claude Desktop**: o klasör kabul etmez, tek dosyalık bir `.skill
 |-------------------|-------|
 | Claude Code · Codex · Antigravity … | Skill klasörünü kopyala → **Yöntem 1–2** |
 | Claude Desktop | `dist/*.skill` paketini yükle → **Yöntem 3** |
+| Hermes Agent (sunucu) | Hermes'e depo linkini ver, gerisini o yapar → **Yöntem 4** |
 
 ### Yöntem 1 — Repoyu klonla, istediğin skill'i kopyala
 
@@ -89,6 +91,20 @@ Claude Desktop'ta klasör kopyalama işe yaramaz — Desktop bir skill'i tek dos
 2. Claude Desktop'ta skill yükleme ekranını aç ve indirdiğin `.skill` dosyasını ekle
 3. Skill listede göründükten sonra doğal dilde çağır (örn. *"hook oluştur"*)
 
+### Yöntem 4 — Hermes Agent: depo linkini ver, gerisini o yapsın
+
+`fatura-kutusu` bir Claude Code skill'i değil, [Hermes Agent](https://github.com/NousResearch/hermes-agent) skill'i; sunucuda çalışan Hermes'in `skills/productivity/` dizinine gider. Terminal gerekmez, Hermes'e şunu yaz:
+
+> https://github.com/eyaprak/skills deposundaki `fatura-kutusu` klasörünü `skills/productivity/fatura-kutusu` olarak kur ve beceriyi yükle.
+
+Kendin yapmak istersen sunucuda tek satır (yalnızca o klasörü çeker):
+
+```bash
+git clone --depth 1 --filter=blob:none --sparse https://github.com/eyaprak/skills /tmp/eyaprak-skills && git -C /tmp/eyaprak-skills sparse-checkout set fatura-kutusu && cp -r /tmp/eyaprak-skills/fatura-kutusu "${HERMES_HOME:-/opt/data}/skills/productivity/" && rm -rf /tmp/eyaprak-skills
+```
+
+Sonrası için [fatura-kutusu/README.md](./fatura-kutusu/README.md): Hermes'e "Fatura kutusunu kur" de, kalan adımları (Google izni, Mistral anahtarı, klasörler ve tablo) sohbetten kendisi yürütür.
+
 ### Kullanım
 
 Kurduktan sonra Claude Code'u aç ve doğal dilde isteğini yaz:
@@ -119,6 +135,11 @@ Kökteki her klasör, olduğu gibi kopyalanabilir bir skill'dir. `dist/` ise bu 
 │   ├── references/
 │   ├── scripts/              ← skill'in çağırdığı yardımcı script'ler
 │   └── assets/templates/     ← starter kompozisyonlar + self-hosted fontlar
+├── fatura-kutusu/              ← Hermes Agent skill'i (sunucuda çalışır)
+│   ├── README.md             ← izleyici kurulumu: dört mesaj, terminal yok
+│   ├── SKILL.md              ← Hermes'in okuduğu aşamalar ve komutlar
+│   ├── scripts/fatura_kutusu.py      ← kontroller, Drive/Sheets/Telegram işleri burada
+│   └── references/
 └── dist/                     ← 📦 Claude Desktop için tek dosyalık paketler
     └── hyperframes-studio.skill
                               ← yukarıdaki klasörün zip'lenmiş hâli
