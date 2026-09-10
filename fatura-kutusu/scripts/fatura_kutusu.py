@@ -56,6 +56,7 @@ ENV_PATH = os.path.join(HERMES_HOME, ".env")
 
 SUTUNLAR = ["Islenme Tarihi", "Fatura No", "Fatura Tarihi", "Firma", "Vergi No",
             "Ara Toplam", "KDV", "Genel Toplam", "Vade", "Durum", "Belge"]
+SURUM = "2.1.1"  # `durum` ciktisinda gorunur; sunucudaki kopya ile depo karsilastirilir
 KAYITLI, KONTROL, MUKERRER = "Kayitli", "Kontrol Bekliyor", "Mukerrer"
 ALANLAR = ["fatura_no", "fatura_tarihi", "firma", "vergi_no",
            "ara_toplam", "kdv", "genel_toplam", "vade"]
@@ -328,11 +329,55 @@ def sayfa_adi_bul(sheets, sid):
     return ss["sheets"][0]["properties"]["title"]
 
 
+def no_anahtar(v):
+    """Fatura no karsilastirma anahtari. Eski satirlarda Sheets numarayi sayiya
+    cevirmis olabilir (2026000147.0); bicimden bagimsiz esitlik icin normalize eder."""
+    if v in (None, ""):
+        return ""
+    if isinstance(v, float) and v.is_integer():
+        v = int(v)
+    return re.sub(r"\s+", "", str(v)).lstrip("'").upper()
+
+
+def sheets_tarih(v):
+    """Sheets hucresini YYYY-MM-DD metnine cevirir.
+
+    TUZAK: USER_ENTERED ile yazilan '2026-09-10' Sheets'te TARIH hucresine donusur;
+    UNFORMATTED_VALUE ile okununca seri numara gelir (46275 = 1899-12-30'dan gun sayisi).
+    Ham hucreye startswith('2026-09') uygulanirsa hicbir satir eslesmez ve rapor 0 gosterir.
+    Tarih hucreleri yalnizca bu fonksiyondan gecerek okunur.
+    """
+    if v in (None, ""):
+        return ""
+    if isinstance(v, bool):
+        return ""
+    if isinstance(v, (int, float)):
+        try:
+            return (dt.date(1899, 12, 30) + dt.timedelta(days=int(v))).strftime("%Y-%m-%d")
+        except (OverflowError, ValueError):
+            return ""
+    return tarih_normalize(str(v)) or ""
+
+
+def metin_zorla(v):
+    """Fatura no ve vergi no gibi kimlik alanlarini Sheets'in sayiya cevirmesini engeller.
+
+    TUZAK: USER_ENTERED ile yazilan '0001234' sayiya doner, bastaki sifirlar kaybolur;
+    on haneli vergi no bilimsel gosterime kayabilir. Bastaki kesme isareti hucreyi metin
+    yapar ve gorunmez. Okurken (UNFORMATTED_VALUE) kesme isareti gelmez.
+    """
+    if v in (None, ""):
+        return ""
+    v = str(v)
+    return v if v.startswith("'") else "'" + v
+
+
 def fatura_nolari(sheets, cfg):
     """Mukerrer kontrolu icin TAZE liste. Her cagri tabloyu yeniden okur."""
     r = sheets.spreadsheets().values().get(
-        spreadsheetId=cfg["tablo_id"], range="%s!B2:B" % cfg["sayfa_adi"]).execute()
-    return set(str(v[0]).strip() for v in r.get("values", []) if v and str(v[0]).strip())
+        spreadsheetId=cfg["tablo_id"], range="%s!B2:B" % cfg["sayfa_adi"],
+        valueRenderOption="UNFORMATTED_VALUE").execute()
+    return set(no_anahtar(v[0]) for v in r.get("values", []) if v and no_anahtar(v[0]))
 
 
 def satir_ekle(sheets, cfg, satir):
@@ -523,7 +568,7 @@ def kontrol_et(a, mevcut_nolar, cfg):
     tolerans = float(cfg.get("tolerans", 0.01))
     sonuc = {"mukerrer": False, "tutar_fark": None, "eksik": []}
 
-    if a["fatura_no"] and a["fatura_no"] in mevcut_nolar:
+    if a["fatura_no"] and no_anahtar(a["fatura_no"]) in mevcut_nolar:
         sonuc["mukerrer"] = True
         return MUKERRER, sonuc
 
@@ -545,7 +590,7 @@ def kontrol_et(a, mevcut_nolar, cfg):
 # ---------------------------------------------------------------------------
 
 def cmd_durum(args):
-    d = {"hermes_home": HERMES_HOME, "python": sys.executable, "config": os.path.isfile(CONFIG_PATH),
+    d = {"surum": SURUM, "hermes_home": HERMES_HOME, "python": sys.executable, "config": os.path.isfile(CONFIG_PATH),
          "config_yolu": CONFIG_PATH, "uyarilar": []}
     env = env_oku()
     d["mistral_key"] = bool(env.get("MISTRAL_API_KEY"))
@@ -785,7 +830,7 @@ def cmd_kaydet(args):
                                     int(round(a["genel_toplam"])), uzanti)
         dosya_tasi(drive, args.file_id, ay_id, yeni_ad)
         link = drive_link(args.file_id)
-        satir = [islenme, a["fatura_no"], a["fatura_tarihi"], a["firma"], a["vergi_no"] or "",
+        satir = [islenme, metin_zorla(a["fatura_no"]), a["fatura_tarihi"], a["firma"], metin_zorla(a["vergi_no"]),
                  a["ara_toplam"] if a["ara_toplam"] is not None else "", a["kdv"] if a["kdv"] is not None else "",
                  a["genel_toplam"], a["vade"] or "", KAYITLI,
                  '=HYPERLINK("%s"%s "Görüntüle")' % (link, ayirici)]
@@ -800,7 +845,7 @@ def cmd_kaydet(args):
     elif durum == KONTROL:
         dosya_tasi(drive, args.file_id, cfg["hatali_id"])
         link = drive_link(args.file_id)
-        satir = [islenme, a["fatura_no"] or "", a["fatura_tarihi"] or "", a["firma"] or "", a["vergi_no"] or "",
+        satir = [islenme, metin_zorla(a["fatura_no"]), a["fatura_tarihi"] or "", a["firma"] or "", metin_zorla(a["vergi_no"]),
                  a["ara_toplam"] if a["ara_toplam"] is not None else "", a["kdv"] if a["kdv"] is not None else "",
                  a["genel_toplam"] if a["genel_toplam"] is not None else "", a["vade"] or "", KONTROL,
                  '=HYPERLINK("%s"%s "Görüntüle")' % (link, ayirici)]
@@ -845,7 +890,8 @@ def cmd_rapor(args):
         ilk = bugun.replace(day=1)
         ay = (ilk - dt.timedelta(days=1)).strftime("%Y-%m")
 
-    satirlar = [s for s in tum_satirlar(sheets, cfg) if s and str(s[0]).startswith(ay)]
+    # Islenme Tarihi hucresi seri numara gelebilir; ham hucreye startswith uygulama.
+    satirlar = [s for s in tum_satirlar(sheets, cfg) if s and sheets_tarih(s[0])[:7] == ay]
 
     def hucre(s, i):
         return s[i] if i < len(s) else ""
@@ -874,7 +920,7 @@ def cmd_rapor(args):
     satirlar_m += ["", "🔗 Tablo: %s" % tablo_link(cfg["tablo_id"])]
     mesaj = "\n".join(satirlar_m)
 
-    cikti({"ay": ay, "islenen": len(kayitli), "toplam": round(toplam, 2), "kontrol_bekleyen": len(bekleyen),
+    cikti({"ay": ay, "ay_adi": baslik, "islenen": len(kayitli), "toplam": round(toplam, 2), "kontrol_bekleyen": len(bekleyen),
            "hatali_klasoru": hatali_adet, "gelen_bekleyen": gelen_adet,
            "en_yuksek": [{"firma": f, "toplam": round(t, 2)} for f, t in en_yuksek],
            "mesaj": mesaj,

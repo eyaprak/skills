@@ -64,3 +64,7 @@ Kullanıcıya bu noktada şunu söyle: "Fatura Kutusu paketi kuruldu. Şimdi ba�
 > Kurulum bitti. Test için 01-Gelen klasörüne bir fatura at (PDF ya da fotoğraf), sonra bana "belgeleri işle" de.
 
 Bundan sonraki her şey (işleme, Telegram, otomatiğe alma) SKILL.md'de yazılıdır; bu dosyaya bir daha dönme.
+
+## Güncelleme
+
+Aynı talimat yeniden çalıştırıldığında 3. adım skill klasörünü silip depodaki güncel sürümle değiştirir. Sunucuda script'e elle yapılmış değişiklikler kaybolur; `$HERMES_HOME/fatura-kutusu/config.json` ve `.env` skill klasörünün dışında olduğu için korunur, kurulum ve Google izni tekrarlanmaz. `durum` çıktısındaki `surum` alanı hangi sürümün yüklü olduğunu söyler.
