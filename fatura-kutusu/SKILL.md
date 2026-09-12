@@ -1,7 +1,7 @@
 ---
 name: fatura-kutusu
 description: "Drive'a atılan faturaları okur, kontrol eder, Sheets'e kaydeder, Telegram'a raporlar. Kurulumu sohbetten adım adım kendisi yürütür."
-version: 2.1.1
+version: 2.1.2
 metadata:
   hermes:
     tags: [fatura, kutu, belge, invoice, drive, sheets, telegram, ocr, isleme, kurulum]
@@ -183,6 +183,7 @@ Kurduktan sonra kullanıcıya söyle: "İki görev kurdum: saat başı klasöre 
 
 ## Sorun giderme
 
+- Tabloda tarihler `46273` gibi sayı görünüyorsa: `$KUTU bicimle`. Tarih sütunlarına görünüm biçimi uygular, veri değişmez. Kullanıcıya "tarihler artık gün.ay.yıl görünüyor" de.
 - `rapor` parametresiz çalışınca **geçen ayı** raporlar; zamanlanmış görev ayın 1'inde çalıştığı için böyle. Kullanıcı bu ayı isterse `$KUTU rapor --ay bu`. Sonucu söylerken hangi ayın özeti olduğunu belirt; "0 belge" çıktısı çoğu zaman yanlış ayın seçilmiş olmasıdır.
 - `oku` OCR hatası veriyorsa: `durum` çıktısındaki `mistral_key` alanına bak; anahtar geçersiz olabilir, 2. aşamayı tekrar et.
 - `kaydet` içinde `telegram: gonderilemedi` görürsen işlem tamamlanmıştır, yalnızca rapor gitmemiştir. Kullanıcıya söyle, 5. aşamayı çalıştır.

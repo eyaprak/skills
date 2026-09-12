@@ -9,6 +9,7 @@ Komutlar:
   durum                            kurulum ve baglanti durumu (her calismada ILK komut)
   kur [--ana-klasor AD] [--tablo AD] [--yeniden]
                                    Drive klasorleri + Sheets tablosu olusturur, config yazar
+  bicimle                          mevcut tabloya baslik ve tarih bicimi uygular (veri degismez)
   ayarla ANAHTAR=DEGER ...         config guncelle (orn. telegram_chat_id=123456789)
   anahtar mistral=<key>            anahtari dogrular, .env'e yazar (telegram=<token> de olur)
   telegram-test                    home kanalina deneme mesaji
@@ -56,8 +57,15 @@ ENV_PATH = os.path.join(HERMES_HOME, ".env")
 
 SUTUNLAR = ["Islenme Tarihi", "Fatura No", "Fatura Tarihi", "Firma", "Vergi No",
             "Ara Toplam", "KDV", "Genel Toplam", "Vade", "Durum", "Belge"]
-SURUM = "2.1.1"  # `durum` ciktisinda gorunur; sunucudaki kopya ile depo karsilastirilir
+SURUM = "2.1.2"  # `durum` ciktisinda gorunur; sunucudaki kopya ile depo karsilastirilir
 KAYITLI, KONTROL, MUKERRER = "Kayitli", "Kontrol Bekliyor", "Mukerrer"
+# Tarih sutunlari (0 tabanli): A Islenme Tarihi, C Fatura Tarihi, I Vade.
+# TUZAK: USER_ENTERED ile yazilan tarih hucreye tarih DEGERI olarak girer ama bicim
+# "Automatic" kalabilir; o zaman ekranda 46273 gibi seri numara gorunur. Bu sutunlara
+# acik tarih bicimi uygulanir: tablo kurulurken, mevcut tabloya `bicimle` ile ve her
+# satir eklendikten sonra o satira.
+TARIH_SUTUNLAR = (0, 2, 8)
+TARIH_BICIMI = {"type": "DATE", "pattern": "dd.mm.yyyy"}
 ALANLAR = ["fatura_no", "fatura_tarihi", "firma", "vergi_no",
            "ara_toplam", "kdv", "genel_toplam", "vade"]
 ZORUNLU_VARSAYILAN = ["fatura_no", "fatura_tarihi", "firma", "genel_toplam"]
@@ -310,13 +318,8 @@ def tablo_olustur(drive, sheets, ad, parent, sayfa="Kayitlar"):
     sheets.spreadsheets().values().update(
         spreadsheetId=sid, range="%s!A1:K1" % sayfa, valueInputOption="RAW",
         body={"values": [SUTUNLAR]}).execute()
-    sheets.spreadsheets().batchUpdate(spreadsheetId=sid, body={"requests": [
-        {"repeatCell": {"range": {"sheetId": sheet_id, "startRowIndex": 0, "endRowIndex": 1},
-                        "cell": {"userEnteredFormat": {"textFormat": {"bold": True}}},
-                        "fields": "userEnteredFormat.textFormat.bold"}},
-        {"autoResizeDimensions": {"dimensions": {"sheetId": sheet_id, "dimension": "COLUMNS",
-                                                 "startIndex": 0, "endIndex": 11}}},
-    ]}).execute()
+    sheets.spreadsheets().batchUpdate(spreadsheetId=sid,
+                                      body={"requests": bicim_istekleri(sheet_id)}).execute()
     # Tabloyu ana klasore tasi (create koku Drive'a koyar)
     meta = dosya_meta(drive, sid)
     drive.files().update(fileId=sid, addParents=parent, removeParents=",".join(meta.get("parents", [])),
@@ -380,11 +383,68 @@ def fatura_nolari(sheets, cfg):
     return set(no_anahtar(v[0]) for v in r.get("values", []) if v and no_anahtar(v[0]))
 
 
+def bicim_istekleri(sheet_id, satir_bas=None, satir_son=None):
+    """Tablo bicimi: baslik kalin, sutun genislikleri, tarih sutunlarina dd.mm.yyyy.
+
+    satir_bas/satir_son verilirse yalnizca o satir araligina tarih bicimi uygulanir
+    (0 tabanli, yari acik). Verilmezse basliktan sutunun sonuna kadar.
+    """
+    if satir_bas is None:
+        istekler = [
+            {"repeatCell": {"range": {"sheetId": sheet_id, "startRowIndex": 0, "endRowIndex": 1},
+                            "cell": {"userEnteredFormat": {"textFormat": {"bold": True}}},
+                            "fields": "userEnteredFormat.textFormat.bold"}},
+            {"autoResizeDimensions": {"dimensions": {"sheetId": sheet_id, "dimension": "COLUMNS",
+                                                     "startIndex": 0, "endIndex": 11}}},
+        ]
+        aralik = {"startRowIndex": 1}
+    else:
+        istekler = []
+        aralik = {"startRowIndex": satir_bas, "endRowIndex": satir_son}
+    for col in TARIH_SUTUNLAR:
+        r = dict(aralik, sheetId=sheet_id, startColumnIndex=col, endColumnIndex=col + 1)
+        istekler.append({"repeatCell": {"range": r,
+                                        "cell": {"userEnteredFormat": {"numberFormat": TARIH_BICIMI}},
+                                        "fields": "userEnteredFormat.numberFormat"}})
+    return istekler
+
+
+def sayfa_id_bul(sheets, cfg):
+    ss = sheets.spreadsheets().get(spreadsheetId=cfg["tablo_id"],
+                                   fields="sheets.properties.sheetId,sheets.properties.title").execute()
+    for s in ss["sheets"]:
+        if s["properties"]["title"] == cfg["sayfa_adi"]:
+            return s["properties"]["sheetId"]
+    return ss["sheets"][0]["properties"]["sheetId"]
+
+
+def bicim_uygula(sheets, cfg, satir_bas=None, satir_son=None):
+    sheet_id = sayfa_id_bul(sheets, cfg)
+    sheets.spreadsheets().batchUpdate(
+        spreadsheetId=cfg["tablo_id"],
+        body={"requests": bicim_istekleri(sheet_id, satir_bas, satir_son)}).execute()
+
+
+def _satir_no(updated_range):
+    """'Kayitlar!A5:K5' -> 5 (1 tabanli). Bulunamazsa None."""
+    m = re.search(r"![A-Z]+(\d+)", updated_range or "")
+    return int(m.group(1)) if m else None
+
+
 def satir_ekle(sheets, cfg, satir):
-    return sheets.spreadsheets().values().append(
+    r = sheets.spreadsheets().values().append(
         spreadsheetId=cfg["tablo_id"], range="%s!A1" % cfg["sayfa_adi"],
         valueInputOption="USER_ENTERED", insertDataOption="INSERT_ROWS",
         body={"values": [satir]}).execute()
+    # Eklenen satirin tarih hucrelerine bicim uygula. Basarisiz olursa kayit yine tamamdir;
+    # ekranda seri numara gorunur, `bicimle` komutu duzeltir.
+    try:
+        n = _satir_no(r.get("updates", {}).get("updatedRange"))
+        if n:
+            bicim_uygula(sheets, cfg, n - 1, n)
+    except Exception:
+        pass
+    return r
 
 
 def tum_satirlar(sheets, cfg):
@@ -694,6 +754,12 @@ def cmd_kur(args):
         "tolerans": 0.01,
     }
     config_yaz(cfg)
+    if not olusan[-1][1]:
+        # Tablo zaten vardi: eski surumle kurulmus olabilir, bicimi simdi uygula.
+        try:
+            bicim_uygula(sheets, cfg)
+        except Exception:
+            pass
     cikti({"mesaj": "Kurulum tamam.",
            "olusturulan": [ad for ad, yeni in olusan if yeni],
            "zaten_vardi": [ad for ad, yeni in olusan if not yeni],
@@ -701,6 +767,17 @@ def cmd_kur(args):
                            "islenen": klasor_link(islenen), "hatali": klasor_link(hatali), "tablo": tablo_link(tablo)},
            "config_yolu": CONFIG_PATH,
            "sonraki_adim": "01-Gelen klasorune bir belge at ve 'belgeleri isle' de."})
+
+
+def cmd_bicimle(args):
+    """Mevcut tabloya baslik ve tarih bicimini uygular. Kurulum yoksa hata vermez."""
+    cfg = config_yukle(zorunlu=False)
+    if not cfg:
+        cikti({"mesaj": "Kurulum yok, bicimleme atlandi.", "atlandi": True})
+    _, sheets, _ = servisler()
+    bicim_uygula(sheets, cfg)
+    cikti({"mesaj": "Tablo bicimlendi: baslik kalin, tarih sutunlari dd.mm.yyyy. Veriler degismedi.",
+           "tablo": tablo_link(cfg["tablo_id"])})
 
 
 def cmd_ayarla(args):
@@ -938,6 +1015,7 @@ def main():
     k.add_argument("--tablo", default="Fatura Kayitlari")
     k.add_argument("--yeniden", action="store_true")
     k.set_defaults(fn=cmd_kur)
+    sp.add_parser("bicimle").set_defaults(fn=cmd_bicimle)
     a = sp.add_parser("ayarla")
     a.add_argument("ciftler", nargs="+")
     a.set_defaults(fn=cmd_ayarla)

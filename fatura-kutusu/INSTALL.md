@@ -53,7 +53,9 @@ H="${HERMES_HOME:-/opt/data}"; P="$H/.venv/bin/python"; [ -x "$P" ] || P=python3
 H="${HERMES_HOME:-/opt/data}"; P="$H/.venv/bin/python"; [ -x "$P" ] || P=python3; "$P" "$H/skills/productivity/fatura-kutusu/scripts/fatura_kutusu.py" durum
 ```
 
-Çıktı JSON'dur. `asama` alanına göre SKILL.md'deki ilgili bölüme geç ve zinciri sonuna kadar yürüt: `GOOGLE_GEREKLI` ise Google iznini, `MISTRAL_GEREKLI` ise Mistral anahtarını, `KURULUM_GEREKLI` ise klasörleri ve tabloyu kur. Her aşamanın bitiminde `durum` komutunu tekrar çalıştır.
+Ardından aynı script'i `bicimle` komutuyla bir kez çalıştır: mevcut bir tablo varsa tarih sütunlarına görünüm biçimi uygular (eski sürümle kurulmuş tablolarda tarihler sayı görünüyordu); kurulum yoksa "atlandı" der, sorun değil.
+
+`durum` çıktısı JSON'dur. `asama` alanına göre SKILL.md'deki ilgili bölüme geç ve zinciri sonuna kadar yürüt: `GOOGLE_GEREKLI` ise Google iznini, `MISTRAL_GEREKLI` ise Mistral anahtarını, `KURULUM_GEREKLI` ise klasörleri ve tabloyu kur. Her aşamanın bitiminde `durum` komutunu tekrar çalıştır.
 
 Kullanıcıya bu noktada şunu söyle: "Fatura Kutusu paketi kuruldu. Şimdi bağlantıları sırayla kuruyoruz; ilk olarak Google izni gerekiyor."
 
