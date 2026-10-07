@@ -29,6 +29,7 @@ YouTube kanalımda Claude Code ile neler yapılabileceğini anlatıyorum. Videol
 | [**hyperframes-studio**](./hyperframes-studio) | Ham konuşma klibini + transcript'ini (ya da düz bir içeriği) alıp [HyperFrames](https://www.npmjs.com/package/hyperframes) ile bitmiş bir video üretir: yatay **hook** (16:9 intro), dikey **Shorts** (9:16, altyazılı) ya da animasyonlu **slidedeck** (16:9 sunum). Koyu tema, tek marka rengi, self-hosted Manrope + JetBrains Mono; hook/shorts **1080p · 60fps** MP4'e render edilir, deck HTML sunum olarak teslim edilir. İçinde tak-çalıştır starter template'ler gelir. | *"hook oluştur"*, *"intro yap"*, *"shorts oluştur"*, *"dikey video"*, *"slidedeck oluştur"*, *"sunum yap"* |
 | [**prd-yaz**](./prd-yaz) | Seni adım adım sorgulayarak, dağınık bir fikri net bir PRD'ye (ürün gereksinim belgesine) dönüştürür ve `prd.md` dosyasına yazar. Yapay zeka ile kod yazmadan önce işi netleştirmenin temeli. | *"prd yaz"*, *"ürün gereksinim belgesi oluştur"*, *"yeni özellik planla"* |
 | [**seo-expert**](./seo-expert) | Uçtan uca SEO içerik üretim hattı: trend analizi → derin araştırma → önce taslak (outline) onayı → bölüm bölüm yazım → 18 kontrollü kalite kapısı (puan < 70 ise 2 kez otomatik yeniden dener) → yayına hazır temiz semantik **HTML** çıktısı. Sadece bir konu vermen yeterli; Claude Desktop, Web ve Code'da script/veritabanı gerektirmeden çalışır. | *"blog yazısı yaz"*, *"SEO içeriği oluştur"*, *"araştır ve yaz"*, *"şu konu hakkında makale yaz"*, *"/seo-expert"* |
+| [**teklif-kutusu**](./teklif-kutusu) | Google Tablolar'daki müşteri listende durumu **"Bekliyor"** olan ilk firma için uçtan uca teklif hazırlar: Google Dokümanlar şablonunun kopyasını doldurur, PDF'ini alır, ikisini ayın klasörüne koyar, PDF ekli **taslak** mail oluşturur (asla göndermez) ve listedeki satırı günceller. Dosya kimlikleri skill'de değil, senin `teklif-ayarlari.json` dosyanda. | *"teklif hazırla"*, *"sıradaki teklifi çıkar"*, *"bekleyen firmaya teklif yap"*, *"/teklif-kutusu"* |
 | [**fatura-kutusu**](./fatura-kutusu) | **Hermes Agent** skill'i (sunucuda çalışır). Google Drive'daki bir klasöre attığın faturaları okur, üç kontrolden geçirir (tutar eşitliği, zorunlu alanlar, mükerrer), Google Sheets'e belge bağlantısıyla kaydeder, tutmayanı kaydetmeyip Telegram'dan sorar, ay sonunda özet gönderir. Kurulumu sohbetten kendisi yürütür; kontroller modelde değil script'te. | *"fatura kutusunu kur"*, *"belgeleri işle"*, *"otomatiğe al"* |
 
 > 🎬 Yeni videolarda gösterdikçe bu liste büyüyecek.
@@ -115,7 +116,7 @@ Kurduktan sonra Claude Code'u aç ve doğal dilde isteğini yaz:
 
 Claude doğru skill'i otomatik bulup devreye alır. Skill'in adıyla da çağırabilirsin (örn. `/deploy-app`).
 
-> 💡 Bazı skill'ler ek araçlara ihtiyaç duyar — `deploy-app` için **Hostinger MCP**, `hyperframes-studio` için **Node.js + npx** ve PATH'te **ffmpeg**. Her skill'in kendi `SKILL.md` dosyasında gereksinimleri ve adımları yazılıdır; kurmadan önce göz at.
+> 💡 Bazı skill'ler ek araçlara ihtiyaç duyar — `deploy-app` için **Hostinger MCP**, `hyperframes-studio` için **Node.js + npx** ve PATH'te **ffmpeg**, `teklif-kutusu` için **Node.js** ve Google hesabına bağlanmış **Google Workspace CLI** (`gws`). Her skill'in kendi `SKILL.md` dosyasında gereksinimleri ve adımları yazılıdır; kurmadan önce göz at.
 
 ---
 
@@ -135,6 +136,11 @@ Kökteki her klasör, olduğu gibi kopyalanabilir bir skill'dir. `dist/` ise bu 
 │   ├── references/
 │   ├── scripts/              ← skill'in çağırdığı yardımcı script'ler
 │   └── assets/templates/     ← starter kompozisyonlar + self-hosted fontlar
+├── teklif-kutusu/
+│   ├── README.md             ← kurulum, liste sütunları, şablon boşlukları
+│   ├── SKILL.md
+│   ├── teklif-ayarlari.ornek.json   ← kendi Drive kimliklerinle dolduracağın kalıp
+│   └── scripts/              ← kayıt seçimi ve taslak mail üretimi (Node.js)
 ├── fatura-kutusu/              ← Hermes Agent skill'i (sunucuda çalışır)
 │   ├── README.md             ← izleyici belgesi: tek mesaj, terminal yok
 │   ├── INSTALL.md            ← Hermes'in okuyup uyguladığı kurulum talimatı

@@ -1,0 +1,42 @@
+{
+  "aciklama": "Teklif Kutusu ayar dosyasi. Bu dosyayi 'teklif-ayarlari.json' adiyla calisma klasorune kopyala ve BURAYA_... alanlarini kendi Drive kimliklerinle doldur.",
+  "hesap": "BURAYA_GONDEREN_GMAIL_ADRESI",
+  "klasorler": {
+    "ana": {
+      "ad": "Teklif Kutusu",
+      "id": "BURAYA_ANA_KLASOR_ID"
+    }
+  },
+  "ana_liste": {
+    "ad": "Musteriler",
+    "id": "BURAYA_GOOGLE_TABLOLAR_ID",
+    "sekme": "Sayfa1",
+    "kolonlar": [
+      "firma",
+      "yetkili",
+      "e-posta",
+      "hizmet",
+      "tutar",
+      "durum",
+      "teklif_linki",
+      "gonderim_tarihi",
+      "pdf"
+    ]
+  },
+  "sablon": {
+    "ad": "Teklif Şablonu",
+    "id": "BURAYA_GOOGLE_DOKUMANLAR_SABLON_ID",
+    "bosluklar": [
+      { "ad": "{{firma}}", "kaynak": "Musteriler.firma" },
+      { "ad": "{{yetkili}}", "kaynak": "Musteriler.yetkili" },
+      { "ad": "{{hizmet}}", "kaynak": "Musteriler.hizmet" },
+      { "ad": "{{tutar}}", "kaynak": "Musteriler.tutar" },
+      { "ad": "{{gonderim_tarihi}}", "kaynak": "Musteriler.gonderim_tarihi" },
+      {
+        "ad": "{{gonderim_tarihi+1ay}}",
+        "kaynak": "hesaplanir",
+        "kural": "gonderim_tarihi + 1 ay. Tabloda saklanmaz, doldurma aninda hesaplanir. Bicim: gg.aa.yyyy"
+      }
+    ]
+  }
+}
