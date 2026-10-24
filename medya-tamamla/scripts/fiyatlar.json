@@ -1,0 +1,36 @@
+{
+  "_not": "Son bilinen örnek. Her işte resmi sayfayı yeniden okuyup projenin uretim/fiyatlar.json dosyasına güncel değerleri yazın. Fiyatlar 1M token başına $ (parça fiyatı parça başına $).",
+  "kaynak": "https://ai.google.dev/gemini-api/docs/pricing",
+  "sayfa_guncelleme": "2026-10-22",
+  "okundu": "2026-10-23",
+  "katman": "Standart, ücretli",
+  "varsayilan_modeller": {
+    "tts": "gemini-3.8-flash-tts",
+    "music": "lyria-3.5",
+    "image": "gemini-nano-banana-2.1",
+    "video": "gemini-omni-1.1-flash",
+    "analyze": "gemini-3.8-flash",
+    "transcribe": "gemini-3.8-flash",
+    "generate": "gemini-3.8-flash"
+  },
+  "modeller": {
+    "gemini-3.8-flash-tts": { "tur": "tts", "girdi": 0.5, "cikti": 9.0, "token_saniye": 25, "not": "31 Aralık 2026'ya kadar; 1 Ocak 2027'den itibaren girdi 1,00 / çıktı 18,00" },
+    "gemini-3.8-flash-lite-tts": { "tur": "tts", "girdi": 0.5, "cikti": 6.0, "token_saniye": 25 },
+    "lyria-3.5": { "tur": "parca", "parca": 0.08 },
+    "lyria-3-pro-preview": { "tur": "parca", "parca": 0.08 },
+    "lyria-3-clip-preview": { "tur": "parca", "parca": 0.04 },
+    "gemini-nano-banana-2.1": { "tur": "gorsel", "girdi": 1.5, "cikti": 30.0, "cikti_token": { "512": 1120, "1K": 1120, "2K": 1680, "4K": 3780 } },
+    "gemini-3.1-flash-image": { "tur": "gorsel_sabit", "girdi": 0.5, "gorsel": { "512": 0.045, "1K": 0.067, "2K": 0.101, "4K": 0.151 } },
+    "gemini-3-pro-image": { "tur": "gorsel_sabit", "girdi": 2.0, "gorsel": { "1K": 0.134, "2K": 0.134, "4K": 0.24 } },
+    "gemini-omni-1.1-flash": { "tur": "video", "girdi": 1.5, "cikti": 17.5, "token_saniye": 5792, "not": "sayfa yalnız 720p için token/sn veriyor" },
+    "gemini-3.8-flash": { "tur": "metin", "girdi": 0.75, "cikti": 3.75, "not": "31 Aralık 2026'ya kadar; 1 Ocak 2027'den itibaren 1,50 / 7,50" }
+  },
+  "varsayimlar": {
+    "referans_gorsel_token": 1120,
+    "karakter_token": 4,
+    "istem_token": 150,
+    "ses_girdi_token_saniye": 32,
+    "denetim_cikti_token": 200,
+    "video_varsayilan_saniye": 8
+  }
+}

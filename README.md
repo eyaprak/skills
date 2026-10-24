@@ -31,6 +31,7 @@ YouTube kanalımda Claude Code ile neler yapılabileceğini anlatıyorum. Videol
 | [**seo-expert**](./seo-expert) | Uçtan uca SEO içerik üretim hattı: trend analizi → derin araştırma → önce taslak (outline) onayı → bölüm bölüm yazım → 18 kontrollü kalite kapısı (puan < 70 ise 2 kez otomatik yeniden dener) → yayına hazır temiz semantik **HTML** çıktısı. Sadece bir konu vermen yeterli; Claude Desktop, Web ve Code'da script/veritabanı gerektirmeden çalışır. | *"blog yazısı yaz"*, *"SEO içeriği oluştur"*, *"araştır ve yaz"*, *"şu konu hakkında makale yaz"*, *"/seo-expert"* |
 | [**teklif-kutusu**](./teklif-kutusu) | Google Tablolar'daki müşteri listende durumu **"Bekliyor"** olan ilk firma için uçtan uca teklif hazırlar: Google Dokümanlar şablonunun kopyasını doldurur, PDF'ini alır, ikisini ayın klasörüne koyar, PDF ekli **taslak** mail oluşturur (asla göndermez) ve listedeki satırı günceller. Dosya kimlikleri skill'de değil, senin `teklif-ayarlari.json` dosyanda. | *"teklif hazırla"*, *"sıradaki teklifi çıkar"*, *"bekleyen firmaya teklif yap"*, *"/teklif-kutusu"* |
 | [**fatura-kutusu**](./fatura-kutusu) | **Hermes Agent** skill'i (sunucuda çalışır). Google Drive'daki bir klasöre attığın faturaları okur, üç kontrolden geçirir (tutar eşitliği, zorunlu alanlar, mükerrer), Google Sheets'e belge bağlantısıyla kaydeder, tutmayanı kaydetmeyip Telegram'dan sorar, ay sonunda özet gönderir. Kurulumu sohbetten kendisi yürütür; kontroller modelde değil script'te. | *"fatura kutusunu kur"*, *"belgeleri işle"*, *"otomatiğe al"* |
+| [**medya-tamamla**](./medya-tamamla) | Bir projeyi (oyun, web uygulaması, site) inceler, eksik **müzik**, **Türkçe seslendirme**, **görsel** ve **kısa videoyu** Google'ın [gemini-api](https://github.com/google-gemini/gemini-api-cli) aracıyla üretir. Önce her kalemi nerede kullanılacağı ve resmi fiyatla maliyetiyle listeleyip onay alır, üretimden önce stil, ses ve müzik kurallarını sorar. Ürettiklerini yine gemini-api ile denetler, projeye bağlar ve her çağrıyı `maliyet.md` dosyasına yazar. | *"projeye müzik ve seslendirme ekle"*, *"eksik medyayı tamamla"*, *"SVG ikonları gerçek görsellerle değiştir"*, *"/medya-tamamla"* |
 
 > 🎬 Yeni videolarda gösterdikçe bu liste büyüyecek.
 
@@ -116,7 +117,7 @@ Kurduktan sonra Claude Code'u aç ve doğal dilde isteğini yaz:
 
 Claude doğru skill'i otomatik bulup devreye alır. Skill'in adıyla da çağırabilirsin (örn. `/deploy-app`).
 
-> 💡 Bazı skill'ler ek araçlara ihtiyaç duyar — `deploy-app` için **Hostinger MCP**, `hyperframes-studio` için **Node.js + npx** ve PATH'te **ffmpeg**, `teklif-kutusu` için **Node.js** ve Google hesabına bağlanmış **Google Workspace CLI** (`gws`). Her skill'in kendi `SKILL.md` dosyasında gereksinimleri ve adımları yazılıdır; kurmadan önce göz at.
+> 💡 Bazı skill'ler ek araçlara ihtiyaç duyar — `deploy-app` için **Hostinger MCP**, `hyperframes-studio` için **Node.js + npx** ve PATH'te **ffmpeg**, `teklif-kutusu` için **Node.js** ve Google hesabına bağlanmış **Google Workspace CLI** (`gws`), `medya-tamamla` için **gemini-api CLI** (anahtarı tanımlı), **Node.js** ve PATH'te **ffmpeg**. Her skill'in kendi `SKILL.md` dosyasında gereksinimleri ve adımları yazılıdır; kurmadan önce göz at.
 
 ---
 
@@ -147,6 +148,11 @@ Kökteki her klasör, olduğu gibi kopyalanabilir bir skill'dir. `dist/` ise bu 
 │   ├── SKILL.md              ← Hermes'in okuduğu aşamalar ve komutlar
 │   ├── scripts/fatura_kutusu.py      ← kontroller, Drive/Sheets/Telegram işleri burada
 │   └── references/
+├── medya-tamamla/
+│   ├── README.md             ← akış, gereksinimler, gemini-api kurulumu
+│   ├── SKILL.md
+│   ├── references/           ← üretimden önce sorulacak kurallar, liste biçimi, bağlama ilkeleri
+│   └── scripts/              ← çağrı kaydı, sıralı üretim, işleme ve maliyet hesabı (Node.js)
 └── dist/                     ← 📦 Claude Desktop için tek dosyalık paketler
     └── hyperframes-studio.skill
                               ← yukarıdaki klasörün zip'lenmiş hâli
