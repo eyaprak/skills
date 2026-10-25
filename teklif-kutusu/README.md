@@ -4,6 +4,17 @@
 
 Mail **asla gönderilmez**; her zaman Gmail'de taslak olarak bekler. Son kontrol ve "Gönder" tuşu senin.
 
+## Videoda izle
+
+<a href="https://youtu.be/DWMGfkFD5SI"><img src="https://img.youtube.com/vi/DWMGfkFD5SI/maxresdefault.jpg" alt="Claude ile Otomatik Teklif Sistemi Kurdum (Google Docs + Sheets + Gmail)" width="560"></a>
+
+Kurmadan önce akışın tamamını bu videoda görebilirsin:
+
+- [0:28](https://youtu.be/DWMGfkFD5SI?t=28) Sistem nasıl çalışıyor: şablon, firma listesi, PDF ve mail taslağı
+- [4:53](https://youtu.be/DWMGfkFD5SI?t=293) Google Workspace CLI (`gws`) ve Google Cloud ayarları
+- [8:51](https://youtu.be/DWMGfkFD5SI?t=531) Dolu bir tekliften şablon çıkarma
+- [15:30](https://youtu.be/DWMGfkFD5SI?t=930) Akışın tamamını `/teklif-kutusu` skill'ine çevirme
+
 ## Ne yapar
 
 ```

@@ -4,6 +4,17 @@
 
 Bu bir Claude Code skill'i değil; sunucuda çalışan [Hermes Agent](https://github.com/NousResearch/hermes-agent) için yazıldı. Terminal yok, komut yok: Hermes'e tek bir mesaj yazıyorsun, gerisini o yapıyor.
 
+## Videoda izle
+
+<a href="https://youtu.be/5-Fny8Zu1Kk"><img src="https://img.youtube.com/vi/5-Fny8Zu1Kk/maxresdefault.jpg" alt="Hermes Agent ile Tam Otomatik Fatura Kayıt Sistemi Kurdum" width="560"></a>
+
+Kurmadan önce sistemin baştan sona çalıştığını bu videoda görebilirsin:
+
+- [3:02](https://youtu.be/5-Fny8Zu1Kk?t=182) Sunucu ve Hermes Agent kurulumu
+- [6:48](https://youtu.be/5-Fny8Zu1Kk?t=408) Telegram botu ve Google Drive bağlantısı
+- [15:07](https://youtu.be/5-Fny8Zu1Kk?t=907) Canlı test: temiz, tutarsız, mükerrer, eksik ve fotoğraf fatura
+- [21:55](https://youtu.be/5-Fny8Zu1Kk?t=1315) Saat başı tarama ve ay sonu özeti
+
 ## Ne yapar
 
 ```

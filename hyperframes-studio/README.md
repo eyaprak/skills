@@ -4,6 +4,18 @@
 
 Bu klasörün kendisi skill'dir — olduğu gibi skill dizinine kopyalanır. Claude Desktop klasör kabul etmediği için aynı içeriğin paketlenmiş hâli ayrıca [`dist/hyperframes-studio.skill`](../dist/hyperframes-studio.skill) altında duruyor.
 
+## Videoda izle
+
+<a href="https://youtu.be/Bt9X1AUXk80"><img src="https://img.youtube.com/vi/Bt9X1AUXk80/maxresdefault.jpg" alt="Claude Code ile Video Editi: Tek Komutla Hook, Shorts ve Sunum" width="560"></a>
+
+Kurmadan önce üç modun nasıl çalıştığını bu videoda görebilirsin:
+
+- [2:36](https://youtu.be/Bt9X1AUXk80?t=156) Gereksinimler ve üç mod: hook, Shorts, slidedeck
+- [3:47](https://youtu.be/Bt9X1AUXk80?t=227) HyperFrames kurulumu ve skill'i Claude'a yükleme
+- [7:36](https://youtu.be/Bt9X1AUXk80?t=456) Tek komutla sunum dosyası
+- [9:34](https://youtu.be/Bt9X1AUXk80?t=574) Ham Shorts videosunu editleme
+- [12:28](https://youtu.be/Bt9X1AUXk80?t=748) Gerçek maliyet (token ve dolar)
+
 ## Klasörde ne var?
 
 | Yol | Ne işe yarar |
