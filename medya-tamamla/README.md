@@ -4,6 +4,18 @@
 
 Videoda Kargola adlı tarayıcı oyununa bu süreçle 6 müzik, 42 seslendirme, 37 görsel ve bir menü videosu eklendi. Fatura 3,79 $ (188 ₺) oldu. Skill o oturumun son mesajında, takılınan yerlerle birlikte bu klasöre çevrildi.
 
+## Videoda izle
+
+<a href="https://youtu.be/ms3Iy31Ji2w"><img src="https://img.youtube.com/vi/ms3Iy31Ji2w/maxresdefault.jpg" alt="Claude Code ile Oyunuma Ses ve Müzik Ekledim (Gemini API CLI)" width="560"></a>
+
+Kurmadan önce akışın tamamını bu videoda görebilirsin:
+
+- [1:27](https://youtu.be/ms3Iy31Ji2w?t=87) Gemini API CLI nedir, eski Gemini CLI'dan farkı
+- [3:07](https://youtu.be/ms3Iy31Ji2w?t=187) Kurulum, API anahtarı ve CLAUDE.md notu
+- [4:54](https://youtu.be/ms3Iy31Ji2w?t=294) Önce liste, sonra kurallarla üretim
+- [7:49](https://youtu.be/ms3Iy31Ji2w?t=469) Gemini'nin ürettiğini Gemini'ye denetletmek
+- [10:47](https://youtu.be/ms3Iy31Ji2w?t=647) Süreci `medya-tamamla` skill'ine çevirme
+
 ## Ne yapar
 
 ```
